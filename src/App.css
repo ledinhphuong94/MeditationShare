@@ -1,3 +1,11 @@
+.markupTitle {
+  font-family: "Playwrite CZ", cursive;
+  font-optical-sizing: auto;
+  /* font-weight: <weight>; */
+  font-style: normal;
+  color: rgb(255, 255, 0);
+}
+
 .App {
   text-align: center;
 }
@@ -13,26 +21,90 @@
   }
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.card-highlight {
+  animation: highlightFlash 2s ease-out;
+  background-color: #fff6b0 !important;
+}
+
+@keyframes highlightFlash {
+  0% { background-color: #ffe27a; }
+  100% { background-color: white; }
+}
+
+.logo {
+  position: absolute;
+  right:0px;
+  bottom: 10px;
+  position: absolute;
+  z-index: 9999;
+  background-color: white;
+  width: 80px;
+  height: 20px;
   display: flex;
-  flex-direction: column;
-  align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  border-radius: 2px;
+}
+.logo img {
+  width: 20px;
 }
 
-.App-link {
-  color: #61dafb;
+/* CSS cho hiệu ứng viền toàn màn hình */
+
+/* Định nghĩa một animation phát sáng */
+@keyframes glowing-border {
+    0% {
+        background-color: #000000;
+        opacity: 0.1;
+    }
+    20% {
+        background-color: #000000;
+        opacity: 0.2;
+    }
+    40% {
+        background-color: #696c14;
+        opacity: 0.2;
+    }
+    60% {
+        background-color: #FFA500;
+        opacity: 0.5;
+    }
+    80% {
+        background-color: #FFFF00;
+        opacity: 0.6;
+    }
+    90% {
+        background-color: #ffffff;
+        opacity: 0.6;
+    }
+    95% {
+        background-color: #ffffff;
+        opacity: 0.2;
+    }
+    100% {
+        background-color: #ffffff;
+        opacity: 0;
+    }
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+
+/* Lớp CSS sẽ được thêm vào body khi hiệu ứng chạy */
+.glowing-effect {
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    z-index: 999999;
+    animation: glowing-border 3s ease-out forwards; /* Chạy animation trong 2 giây */
+    opacity: 0.5;
+    transition: all;
+    /* ease-out: Bắt đầu nhanh, kết thúc chậm
+       forwards: Giữ trạng thái cuối cùng của animation
+    */
+}
+
+.container-right {
+  background-image: url(./img/backgroundImg.jpg) !important;
+  background-position: center;
+  background-size:cover;
 }
