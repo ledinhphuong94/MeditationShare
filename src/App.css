@@ -104,8 +104,9 @@
   flex: 0 0 25%;
   border-left: 1px solid #ddd;
   background-image: url(./img/backgroundImg.jpg) !important;
-  /* background-position: center; */
-  /* background-size:cover; */
+  background-position: left; 
+  background-size:cover;
+  background-repeat: no-repeat;
 }
 
 /* 📱 Mobile Responsive */
