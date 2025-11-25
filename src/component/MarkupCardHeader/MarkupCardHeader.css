@@ -1,0 +1,26 @@
+.markup-header {
+    font-family: "Playwrite CZ", cursive;
+    text-align: center;
+    height: 120px;
+}
+
+.markup-title-description {
+    color: rgb(255, 255, 0);
+    font-size: 13px;
+    color: white;
+}
+.markup-title {
+  text-align: center; 
+  font-optical-sizing: auto;
+  font-style: normal;
+  color: rgb(255, 255, 0);
+  margin: 15px 0px 0px 0px;
+  font-size: 26px;
+}
+
+.total-users {
+    color: rgb(200, 200, 200);
+    margin: 10px 10px 5px 0px;
+    font-size: 12px;
+    text-align: right;
+}

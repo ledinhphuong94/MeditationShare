@@ -11,7 +11,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000; /* Đảm bảo modal nằm trên các thành phần khác */
+  z-index: 10000; /* Đảm bảo modal nằm trên các thành phần khác */
 }
 
 /* Nội dung Modal */
@@ -19,7 +19,7 @@
   background: white;
   padding: 30px;
   border-radius: 8px;
-  width: 90%;
+  width: 70%;
   max-width: 500px;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
   position: relative;
@@ -53,7 +53,8 @@
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 4px;
-  box-sizing: border-box; /* Quan trọng để padding không làm tăng chiều rộng */
+  box-sizing: border-box;
+  font-family: sans-serif, 'Times New Roman', Times, serif;
 }
 
 .form-group textarea {

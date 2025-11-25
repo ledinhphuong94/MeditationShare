@@ -1,10 +1,95 @@
-.card {
-  transition: transform 0.18s ease, box-shadow 0.25s ease;
+.card-highlight {
+  animation: highlightFlash 2s ease-out;
+  background-color: #fff6b0 !important;
 }
+
+@keyframes highlightFlash {
+  0% { background-color: #ffe27a; }
+  100% { background-color: white; }
+}
+.list-markups {
+    height: calc(100% - 140px);
+    overflow-y: auto;
+}
+.list-markups-container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 10px;
+    transition: all 1s;
+}
+
+.card {
+    background: #ffffff;
+    border-radius: 10px;
+    padding: 10px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e5e5e5;
+    cursor: pointer;
+    transition: transform 0.18s ease, box-shadow 0.25s ease;
+}
+
 .card:hover {
     transform: translateY(-4px);
     box-shadow: 0 8px 22px rgba(0, 0, 0, 0.12);
 }
-.titleCard:hover {
-    color: rgb(105, 105, 242) !important;
+
+.title-card {
+    display: flex;
+    align-items: center;
+}
+
+.title-card h3 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+}
+
+.title-card span {
+    font-size: 13px;
+    color: #888;
+    padding-left: 5px;
+}
+
+.title-card h3:hover {
+    color: #007bff !important;
+}
+
+.date {
+    font-size: 10px;
+    color: #888;
+    font-style: italic;
+}
+
+.message-container {
+    display: flex; /* Kích hoạt Flexbox */
+    align-items: center; /* Căn giữa theo chiều dọc */
+    margin: 8px 0; /* Giữ lại margin cũ của tin nhắn */
+}
+
+/* Điều chỉnh lại style cho tin nhắn để không có margin dọc */
+
+.message {
+    margin: 0; 
+    font-size: 13px;
+    color: #555;
+    /* Cho phép tin nhắn chiếm phần lớn không gian */
+    flex-grow: 1; 
+    /* Tránh nội dung tin nhắn bị cắt bởi icon nếu quá dài */
+    margin-right: 10px; 
+}
+
+.edit-icon {
+    /* Đảm bảo icon luôn ở bên phải */
+    margin-left: auto; 
+    /* Tạo khoảng đệm xung quanh icon để dễ bấm hơn */
+    padding: 4px; 
+    line-height: 1;
+    transition: color 0.2s;
+    color: #525456; 
+}
+
+.edit-icon:hover {
+    color: #007bff/* Đổi màu khi di chuột vào */
 }

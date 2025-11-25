@@ -1,11 +1,12 @@
 import React, {useState, useEffect} from 'react';
 import './MessageModal.css';
 
-const MessageModal = ({ username, isOpen, onClose, onSubmit }) => {
-    const [name, setName] = useState(username);
+const MessageModal = ({ formData, isOpen, onClose, onSubmit }) => {
+    const [name, setName] = useState('');
     const [message, setMessage] = useState('');
     useEffect(() => {
-        setName(username);
+        setName(formData ? formData.name : window.localStorage.getItem("meditationShare"));
+        setMessage(formData ? formData.message : '');
         const handleEscapeKey = (event) => {
             if (event.key === 'Escape' && isOpen) {
                 onClose();
@@ -15,7 +16,7 @@ const MessageModal = ({ username, isOpen, onClose, onSubmit }) => {
         return () => {
             document.removeEventListener('keydown', handleEscapeKey)
         }
-    }, [username, isOpen, onClose]);
+    }, [formData, isOpen, onClose]);
     // Nếu modal không mở thì không render gì cả
     if (!isOpen) return null;
     
@@ -23,7 +24,7 @@ const MessageModal = ({ username, isOpen, onClose, onSubmit }) => {
         e.preventDefault();
         if (name.trim() && message.trim()) {
             // Gọi hàm onSubmit từ component cha, truyền dữ liệu
-            onSubmit({ name, message });
+            onSubmit({ name, message, messId: formData ? formData.id : 0, isEdited: !!formData });
             
             // Reset form và đóng modal
             setName('');
@@ -51,6 +52,9 @@ const MessageModal = ({ username, isOpen, onClose, onSubmit }) => {
                             value={name}
                             onChange={(e) => setName(e.target.value)}
                             placeholder="Ví dụ: Nguyễn Văn A"
+                            disabled={!!formData} 
+                            required
+                            style={{ backgroundColor: !!formData ? '#f0f0f0' : 'white' }}
                         />
                     </div>
 

@@ -1,42 +1,11 @@
 import './MarkupCardList.css'
 import { useEffect } from "react";
-const styles = {
-    listContainer: {
-        display: "flex",
-        flexDirection: "column",
-        gap: "12px",
-        padding: "10px",
-        transition:"all 1s",
-    },
-    card: {
-        background: "#ffffff",
-        borderRadius: "10px",
-        padding: "10px",
-        boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
-        border: "1px solid #e5e5e5",
-        cursor: "pointer",
-        
-    },
-    title: {
-        margin: 0,
-        fontSize: "16px",
-        fontWeight: "600",
-        color: "#333",
-        
-    },
-    message: {
-        margin: "8px 0",
-        fontSize: "13px",
-        color: "#555",
-    },
-    date: {
-        fontSize: "12px",
-        color: "#888",
-        marginTop: "4px",
-    },
-};
+import { BiMessageSquareEdit } from "react-icons/bi";
+import { useUser } from '../../UserContext.js';
 
-export default function MarkupCardList({ markers, activeId, mapRef }) {
+export default function MarkupCardList({ markers, activeId, mapRef, handleUpdateMess }) {
+    const { userId } = useUser();
+
     useEffect(() => {
         const el = document.querySelector(`[data-id="${activeId}"]`);
         if (!el) return;
@@ -50,15 +19,13 @@ export default function MarkupCardList({ markers, activeId, mapRef }) {
     }, [activeId]);
 
     return (
-        <>
-            <h2 className='markupTitle' style={{textAlign: "center"}}>Bản đồ ánh sáng</h2>
-            <div style={styles.listContainer}>
+        <div className="list-markups">
+            <div className='list-markups-container'>
             {markers.map((item, index) => (
                 <div 
-                    className="card"
+                    className="card" /* Thay thế style={styles.card} */
                     data-id={item.id} 
                     key={index} 
-                    style={styles.card}
                     onClick={() => {
                             const map = mapRef.current;
                             if (map) {
@@ -66,28 +33,40 @@ export default function MarkupCardList({ markers, activeId, mapRef }) {
 
                             setTimeout(() => {
                                 map.eachLayer(layer => {
-                                if (layer._latlng && layer._latlng.lat === item.lat && layer._latlng.lng === item.lng) {
-                                    layer.openPopup();
-                                }
+                                    if (layer._latlng && layer._latlng.lat === item.lat && layer._latlng.lng === item.lng) {
+                                        layer.openPopup();
+                                    }
                                 });
                             }, 500);
                         }
                     }}
                 >
-                    <h3 
-                        className="titleCard"
-                        style={styles.title}
-                    >{item.name}</h3>
+                    <div className="title-card"><h3>{item.name}</h3>  {userId === item.user_id ? ( <span>(Bạn)</span>) : ""}</div>
+                    <div className="message-container">
+                        <p className="message">{item.message}</p> 
+                        {userId === item.user_id ? (
+                            <div 
+                                className="edit-icon"
+                                onClick={(e) => {
+                                    e.stopPropagation(); 
+                                    handleUpdateMess(item)
+                                }}
+                            >
+                                <BiMessageSquareEdit  size={18} />
 
-                    <p style={styles.message}>{item.message}</p>
+                            </div>
+                        ) : ''}
+                    </div>
+                   
 
-                    <div style={styles.date}>
+                    <div className="date"> 
                         {new Date(item.created_at).toLocaleString("vi-VN")}
                     </div>
                 </div>
             ))}
             </div>
-        </>
+        </div>
+    
     );
 }
 

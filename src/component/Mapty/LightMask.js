@@ -1,6 +1,6 @@
 // LightMask.jsx
 import React, { useState, useEffect } from 'react';
-import { useMap } from 'react-leaflet';
+import { useMap, useMapEvents } from 'react-leaflet';
 import L from 'leaflet'; // Cần import Leaflet nếu markerPosition là object {lat, lng}
 
 const LightMask = ({ markers, spotlightRadius = 25, mapRef }) => {
@@ -34,6 +34,12 @@ const LightMask = ({ markers, spotlightRadius = 25, mapRef }) => {
     setHoleCenters(newHoleCenters);
   };
 
+  useMapEvents({
+      // Hoặc lắng nghe sự kiện khi đang phóng to/thu nhỏ (chạy liên tục)
+      zoom: updateHolePositions,
+      move: updateHolePositions
+  });
+
   useEffect(() => {
     const popupPane = map.getPane('popupPane');
     const tooltipPane = map.getPane('tooltipPane');
@@ -43,14 +49,14 @@ const LightMask = ({ markers, spotlightRadius = 25, mapRef }) => {
     updateHolePositions(); 
 
     // 2. Lắng nghe sự kiện di chuyển và zoom của bản đồ
-    map.on('move', updateHolePositions);
-    map.on('zoom', updateHolePositions);
+    // map.on('move', updateHolePositions);
+    // map.on('zoom', updateHolePositions);
     
-    // 3. Cleanup event listeners khi component unmount
-    return () => {
-      map.off('move', updateHolePositions);
-      map.off('zoom', updateHolePositions);
-    };
+    // // // 3. Cleanup event listeners khi component unmount
+    // return () => {
+    //   map.off('move', updateHolePositions);
+    //   map.off('zoom', updateHolePositions);
+    // };
   }, [map, markers]); // Re-run khi map hoặc markers thay đổi
 
   // CSS để overlay luôn phủ kín MapContainer
@@ -63,37 +69,6 @@ const LightMask = ({ markers, spotlightRadius = 25, mapRef }) => {
     pointerEvents: 'none', // Cho phép tương tác với bản đồ bên dưới
     zIndex: 400,
   };
-
-  // return (
-  //   <div style={overlayStyle}>
-  //     <svg width="100%" height="100%">
-  //       {/* Định nghĩa Mask */}
-  //       <mask id="lightMask">
-  //         {/* Lớp nền Mask: Màu trắng (trong suốt) phủ kín */}
-  //         <rect x="0" y="0" width="100%" height="100%" fill="white" />
-          
-  //         {/* Lỗ tròn: Vẽ các hình tròn màu đen tại vị trí các Marker */}
-  //         {holeCenters.map((center, index) => (
-  //           <circle 
-  //             key={index}
-  //             cx={center.x} 
-  //             cy={center.y} 
-  //             r={spotlightRadius} 
-  //             fill="black" 
-  //           />
-  //         ))}
-  //       </mask>
-        
-  //       {/* Hình chữ nhật áp dụng Mask */}
-  //       {/* Lớp phủ màu đen/xám với 50% opacity */}
-  //       <rect 
-  //         x="0" y="0" width="100%" height="100%" 
-  //         fill="rgba(0, 0, 0, 0.6)" 
-  //         mask="url(#lightMask)" 
-  //       />
-  //     </svg>
-  //   </div>
-  // );
 
   return (
       <div style={overlayStyle}>
