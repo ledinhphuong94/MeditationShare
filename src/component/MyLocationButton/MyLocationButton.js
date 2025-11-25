@@ -1,7 +1,8 @@
 import './MyLocationButton.css';
 import React, { useState, useEffect } from 'react';
-import { Marker, Popup, CircleMarker  } from "react-leaflet";
-import L from "leaflet";
+import { Popup, CircleMarker  } from "react-leaflet";
+import { GiPositionMarker } from "react-icons/gi";
+
 
 const MyLocationButton = ({mapRef, handleClickOnMap}) => {
   const map = mapRef.current;
@@ -93,6 +94,7 @@ const MyLocationButton = ({mapRef, handleClickOnMap}) => {
         }} 
         disabled={isLoading}
       >
+        <GiPositionMarker size={13} />
         {isLoading ? 'Đang lấy vị trí...' : 'Vị trí của tôi'}
       </button>
       {
