@@ -26,6 +26,16 @@
   font-size: 11px;
 
 }
+
+.logo-hidder {
+  position: absolute;
+  left:10px;
+  bottom: 8px;
+  width: 100px;
+  height: 28px;
+  z-index: 9999;
+}
+
 .logo img {
   width: 20px;
 }

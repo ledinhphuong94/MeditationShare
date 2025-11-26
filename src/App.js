@@ -204,6 +204,7 @@ function App() {
               {/* <img alt='' src={logoImg}/> */}
               © 2025 Bản đồ ánh sáng | Version 1
             </div>
+            <div className='logo-hidder'></div>
           </div>
 
           <div className="container-right">
