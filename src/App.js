@@ -202,7 +202,7 @@ function App() {
             
             <div className='logo'>
               {/* <img alt='' src={logoImg}/> */}
-              © 2025 LM v1
+              © 2025 Bản đồ ánh sáng | Version 1
             </div>
           </div>
 

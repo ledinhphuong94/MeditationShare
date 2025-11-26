@@ -17,13 +17,13 @@
   z-index: 9999;
   background-color: white;
   color: rgba(83, 83, 83, 0.623);
-  width: 61px;
+  width: 299px;
   height: 17px;
   display: flex;
   justify-content: center;
   align-items: center;
   border-radius: 3px;
-  font-size: 8px;
+  font-size: 11px;
 
 }
 .logo img {
@@ -103,10 +103,31 @@
 .container-right {
   flex: 0 0 25%;
   border-left: 1px solid #ddd;
-  background-image: url(./img/backgroundImg.jpg) !important;
+  background-image: url(./img/sunrise.jpg) !important;
   background-position: left; 
   background-size:cover;
   background-repeat: no-repeat;
+}
+
+/* 📱 Mobile Responsive */
+@media (max-width: 962px) {
+  .markup-header {
+    height: 90px !important;
+  }
+
+  .markup-title {
+    font-size: 20px !important;
+    margin: 0px;
+  }
+
+  .markup-title-description {
+    font-size: 10px !important;
+  }
+
+  .total-users {
+    font-size: 10px !important;
+    margin: 5px !important;
+  }
 }
 
 /* 📱 Mobile Responsive */
@@ -116,7 +137,7 @@
   }
 
   .markup-header {
-    height: 100px !important;
+    height: 90px !important;
   }
 
   .total-users {

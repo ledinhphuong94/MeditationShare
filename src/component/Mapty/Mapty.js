@@ -1,11 +1,11 @@
 import React, { useMemo, useState } from 'react';
 import "leaflet/dist/leaflet.css";
-import candleIcon from '../../img/candle2.gif';
 import { MapContainer, TileLayer, Marker, Popup, Tooltip, useMapEvents, useMap } from "react-leaflet";
 import L from "leaflet";
 import LightMask from "./LightMask";
 import MyLocationButton from "../MyLocationButton/MyLocationButton.js"
 import DynamicMarker from "./DynamicMarker.js";
+import MapTilerVectorLayer from './MapTilerLayer.jsx';
 
 const Mapty = ({ markers, handleClickOnMap, onMarkerClick, mapRef }) => {
     // ============================
@@ -28,9 +28,14 @@ const Mapty = ({ markers, handleClickOnMap, onMarkerClick, mapRef }) => {
             zoom={6}
             style={{ height: "100%", width: "100%" }}
             whenCreated={(map) => (mapRef.current = map)}
+            // attributionControl={false}
         >
             
-            <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+            {/* <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" /> */}
+            {/* <TileLayer
+                url={`https://api.maptiler.com/maps/hybrid/{z}/{x}/{y}.jpg?key=${key}`}
+            /> */}
+            <MapTilerVectorLayer />
              
             <MapClickHandler />
 
