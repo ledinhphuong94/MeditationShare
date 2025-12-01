@@ -120,15 +120,16 @@ function Dashboard() {
                 playAudio(audio);
             }
         )
-        .on(
+        .on( //delete
             'postgres_changes',
             { event: 'DELETE', schema: 'public', table: 'markers' },
             (payload) => {
                 console.log('Marker đã bị xóa:', payload);
             // Xử lý cập nhật: tìm và thay thế marker cũ bằng payload.new
                 setMarkers((prev) => [...prev.filter((i) => i.id !== payload.old.id)]);
+                getTotalUsers();
             }
-            )
+        )
         .subscribe();
 
         return () => supabase.removeChannel(channel);

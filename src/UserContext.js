@@ -53,6 +53,8 @@ export const UserProvider = ({ children }) => {
     const { error } = await supabase.auth.signOut();
     localStorage.removeItem('meditation_anonymous_user_id');
     localStorage.removeItem('meditation_user_name');
+    localStorage.removeItem('meditation_currPos');
+
     if (error) console.error('Lỗi khi đăng xuất:', error);
   };
 

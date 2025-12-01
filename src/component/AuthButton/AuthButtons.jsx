@@ -6,7 +6,7 @@ import { supabase } from '../../supabaseClient.js';
 import "./AuthButtons.css";
 
 function AuthButtons() {
-    const { userInfo } = useUser();
+    const { userInfo, logout } = useUser();
     const { userRole, userId, username } = userInfo;
     const navigate = useNavigate();
     
@@ -22,7 +22,7 @@ function AuthButtons() {
             console.error('Lỗi khi đăng xuất:', error);
             alert('Không thể đăng xuất.');
         } else {
-            // Chuyển hướng về trang chủ và Context sẽ tự động xử lý Auth State (chuyển về 'anon')
+            logout();
             navigate('/'); 
         }
     };

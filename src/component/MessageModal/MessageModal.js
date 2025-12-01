@@ -10,7 +10,8 @@ const MessageModal = ({ formData, isOpen, onClose, onSubmit }) => {
     const [name, setName] = useState('');
     const [message, setMessage] = useState('');
     useEffect(() => {
-        setName(formData ? formData.name : username || window.localStorage.getItem("meditation_user_name"));
+        let defaultName = username === 'Anonymous' ? '' : username;
+        setName(formData ? formData.name : defaultName || window.localStorage.getItem("meditation_user_name"));
         setMessage(formData ? formData.message : '');
         const handleEscapeKey = (event) => {
             if (event.key === 'Escape' && isOpen) {
