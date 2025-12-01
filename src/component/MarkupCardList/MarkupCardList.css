@@ -1,3 +1,5 @@
+/* --- Các class cũ được giữ nguyên --- */
+
 .card-highlight {
   animation: highlightFlash 2s ease-out;
   background-color: #fff6b0 !important;
@@ -7,10 +9,13 @@
   0% { background-color: #ffe27a; }
   100% { background-color: white; }
 }
+
 .list-markups {
-    height: calc(100% - 140px);
+    /* Giữ nguyên chiều cao và overflow cho danh sách cuộn */
+    height: calc(100% - 160px);
     overflow-y: auto;
 }
+
 .list-markups-container {
     display: flex;
     flex-direction: column;
@@ -19,6 +24,7 @@
     transition: all 1s;
 }
 
+/* --- Cập nhật .card để giới hạn chiều rộng --- */
 .card {
     background: #ffffff;
     border-radius: 10px;
@@ -27,6 +33,8 @@
     border: 1px solid #e5e5e5;
     cursor: pointer;
     transition: transform 0.18s ease, box-shadow 0.25s ease;
+    /* max-width: 300px; - Đã có trong style inline, có thể bỏ qua */
+    word-wrap: break-word; /* Cho phép từ quá dài tự động ngắt xuống */
 }
 
 .card:hover {
@@ -37,7 +45,58 @@
 .title-card {
     display: flex;
     align-items: center;
+    /* Đảm bảo flexbox cho title */
 }
+
+/* --- Cập nhật .message-container và .message --- */
+.message-container {
+    display: flex; /* Kích hoạt Flexbox */
+    align-items: center; /* Căn giữa theo chiều dọc */
+    margin: 8px 0;
+    /* Đảm bảo container không bị tràn */
+    min-width: 0; 
+}
+
+.message {
+    margin: 0; 
+    font-size: 13px;
+    color: #555;
+    
+    /* Thuộc tính QUAN TRỌNG để giới hạn chiều rộng tin nhắn */
+    flex-grow: 1; /* Cho phép nó mở rộng */
+    flex-shrink: 1; /* Cho phép nó co lại */
+    min-width: 0; /* Cho phép nội dung flex co lại dưới giới hạn */
+    
+    /* Xử lý ngắt dòng cho tin nhắn quá dài */
+    overflow-wrap: break-word; /* Ngắt từ tại ranh giới từ nếu cần */
+    word-break: break-all; /* Ngắt mọi nơi nếu không đủ chỗ */
+
+    margin-right: 10px; /* Tạo khoảng cách với icon */
+}
+
+/* --- Icon Styles (Giữ nguyên và làm sạch) --- */
+
+.edit-icon, .delete-icon {
+    /* Đảm bảo icon không bị co lại hoặc mở rộng */
+    flex-shrink: 0; 
+    margin-left: auto; /* Đẩy icon về phía cuối container */
+    padding: 4px; 
+    line-height: 1;
+    transition: color 0.2s;
+}
+
+.edit-icon {color: #525456; }
+.delete-icon {color: #aa504e; }
+
+.edit-icon:hover {
+    color: #007bff;
+}
+
+.delete-icon:hover {
+    color: #ff383b;
+}
+
+/* --- Các style khác được giữ nguyên --- */
 
 .title-card h3 {
     margin: 0;
@@ -60,36 +119,4 @@
     font-size: 10px;
     color: #888;
     font-style: italic;
-}
-
-.message-container {
-    display: flex; /* Kích hoạt Flexbox */
-    align-items: center; /* Căn giữa theo chiều dọc */
-    margin: 8px 0; /* Giữ lại margin cũ của tin nhắn */
-}
-
-/* Điều chỉnh lại style cho tin nhắn để không có margin dọc */
-
-.message {
-    margin: 0; 
-    font-size: 13px;
-    color: #555;
-    /* Cho phép tin nhắn chiếm phần lớn không gian */
-    flex-grow: 1; 
-    /* Tránh nội dung tin nhắn bị cắt bởi icon nếu quá dài */
-    margin-right: 10px; 
-}
-
-.edit-icon {
-    /* Đảm bảo icon luôn ở bên phải */
-    margin-left: auto; 
-    /* Tạo khoảng đệm xung quanh icon để dễ bấm hơn */
-    padding: 4px; 
-    line-height: 1;
-    transition: color 0.2s;
-    color: #525456; 
-}
-
-.edit-icon:hover {
-    color: #007bff/* Đổi màu khi di chuột vào */
 }

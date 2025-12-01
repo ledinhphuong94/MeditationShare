@@ -1,0 +1,214 @@
+
+
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+.logo {
+  position: absolute;
+  right:0px;
+  bottom: 0px;
+  position: absolute;
+  z-index: 9999;
+  background-color: white;
+  color: rgba(83, 83, 83, 0.623);
+  width: 299px;
+  height: 17px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 3px;
+  font-size: 11px;
+
+}
+
+.logo-hidder {
+  position: absolute;
+  left:10px;
+  bottom: 8px;
+  width: 100px;
+  height: 28px;
+  z-index: 9999;
+}
+
+.logo img {
+  width: 20px;
+}
+
+/* CSS cho hiệu ứng viền toàn màn hình */
+
+/* Định nghĩa một animation phát sáng */
+@keyframes glowing-border {
+    0% {
+        background-color: #000000;
+        opacity: 0.1;
+    }
+    20% {
+        background-color: #000000;
+        opacity: 0.2;
+    }
+    40% {
+        background-color: #696c14;
+        opacity: 0.2;
+    }
+    60% {
+        background-color: #FFA500;
+        opacity: 0.5;
+    }
+    80% {
+        background-color: #FFFF00;
+        opacity: 0.6;
+    }
+    90% {
+        background-color: #ffffff;
+        opacity: 0.6;
+    }
+    95% {
+        background-color: #ffffff;
+        opacity: 0.2;
+    }
+    100% {
+        background-color: #ffffff;
+        opacity: 0;
+    }
+}
+
+
+/* Lớp CSS sẽ được thêm vào body khi hiệu ứng chạy */
+.glowing-effect {
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    z-index: 999999;
+    animation: glowing-border 3s ease-out forwards; /* Chạy animation trong 2 giây */
+    opacity: 0.5;
+    transition: all;
+    /* ease-out: Bắt đầu nhanh, kết thúc chậm
+       forwards: Giữ trạng thái cuối cùng của animation
+    */
+}
+
+
+.container {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+}
+
+/* Bên trái 70% */
+.container-left {
+  flex: 0 0 75%;
+  position: relative;
+}
+
+/* Bên phải 30% */
+.container-right {
+  flex: 0 0 25%;
+  /* border-left: 1px solid #ddd; */
+  background-image: url(../../img/sunrise.jpg) !important;
+  background-position: left; 
+  background-size:cover;
+  background-repeat: no-repeat;
+}
+
+/* 📱 Mobile Responsive */
+@media (max-width: 962px) {
+  .markup-header {
+    height: 90px !important;
+  }
+
+  .markup-title {
+    font-size: 20px !important;
+    margin: 0px;
+  }
+
+  .markup-title-description {
+    font-size: 10px !important;
+  }
+
+  .total-users {
+    font-size: 10px !important;
+    margin: 5px !important;
+  }
+}
+
+/* 📱 Mobile Responsive */
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+  }
+
+  .markup-header {
+    height: 90px !important;
+  }
+
+  .total-users {
+    margin: 5px 0px 0px 0px;
+  }
+
+  .container-left {
+    flex: none;
+    height: 60vh; /* Map chiếm 60% màn hình */
+    width: 100%;
+  }
+
+  .container-right {
+    flex: none;
+    height: 40vh; /* Cards chiếm 40% */
+    width: 100%;
+  }
+
+  .markup-title {
+    font-size: 16px;
+    margin: 0px;
+  }
+
+  .card {
+    padding: 5px;
+  }
+
+   .title-card h3 {
+    font-size: 13px;
+  }
+}
+
+/* 📱 Mobile nhỏ hơn nữa */
+@media (max-width: 480px) {
+  .markup-header {
+    height: 85px !important;
+  }
+  .markup-title {
+    font-size: 18px !important;
+    margin: 5px 0px 0px 0px !important;
+  }
+  .total-users {
+    margin: 5px 0px 0px 0px !important;
+  }
+  .container-left {
+    height: 60vh;
+  }
+
+  .container-right {
+    height: 40vh;
+  }
+
+  .card {
+    padding: 5px;
+  }
+
+  .title-card h3 {
+    font-size: 13px;
+  }
+  .message {
+     margin: 5px 0;
+  }
+  
+}

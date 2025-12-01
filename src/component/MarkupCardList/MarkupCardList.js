@@ -1,10 +1,11 @@
 import './MarkupCardList.css'
 import { useEffect } from "react";
 import { BiMessageSquareEdit } from "react-icons/bi";
+import { MdDeleteForever } from "react-icons/md";
 import { useUser } from '../../UserContext.js';
 
-export default function MarkupCardList({ markers, activeId, mapRef, handleUpdateMess }) {
-    const { userId } = useUser();
+export default function MarkupCardList({ markers, activeId, mapRef, handleUpdateMess, handleDeleteMess }) {
+    const { userInfo } = useUser();
 
     useEffect(() => {
         const el = document.querySelector(`[data-id="${activeId}"]`);
@@ -41,10 +42,10 @@ export default function MarkupCardList({ markers, activeId, mapRef, handleUpdate
                         }
                     }}
                 >
-                    <div className="title-card"><h3>{item.name}</h3>  {userId === item.user_id ? ( <span>(Bạn)</span>) : ""}</div>
+                    <div className="title-card"><h3>{item.name}</h3>  {userInfo.userId === item.user_id ? ( <span>(Bạn)</span>) : ""}</div>
                     <div className="message-container">
                         <p className="message">{item.message}</p> 
-                        {userId === item.user_id ? (
+                        {userInfo.userId === item.user_id ? (
                             <div 
                                 className="edit-icon"
                                 onClick={(e) => {
@@ -53,6 +54,19 @@ export default function MarkupCardList({ markers, activeId, mapRef, handleUpdate
                                 }}
                             >
                                 <BiMessageSquareEdit  size={18} />
+
+                            </div>
+                        ) : ''}
+
+                        {userInfo.userRole === 'admin' ? (
+                            <div 
+                                className="delete-icon"
+                                onClick={(e) => {
+                                    e.stopPropagation(); 
+                                    handleDeleteMess(item)
+                                }}
+                            >
+                                <MdDeleteForever  size={20} />
 
                             </div>
                         ) : ''}

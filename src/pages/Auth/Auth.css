@@ -1,0 +1,144 @@
+/* ========================================================= */
+/* 1. CONTAINER CHÍNH & BACKGROUND */
+/* ========================================================= */
+.auth-page {
+    /* Thiết lập hình nền */
+    background-image: url('../../img/sunrise.jpg'); 
+    /* Thay đổi URL ảnh này thành ảnh của bạn */
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed; /* Giúp hình nền không cuộn */
+
+    /* Căn giữa Form */
+    display: flex;
+    justify-content: center; /* Căn ngang */
+    align-items: center; /* Căn dọc */
+    min-height: 100vh; /* Chiếm toàn bộ chiều cao màn hình */
+    width: 100%;
+    padding: 20px;
+    position: relative;
+    /* Thêm lớp phủ mờ để làm nổi bật form */
+}
+
+/* Lớp phủ (Overlay) để làm tối hình nền và làm nổi bật form */
+.auth-page::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.4); /* Màu đen mờ 40% */
+    z-index: 1;
+}
+
+/* ========================================================= */
+/* 2. FORM CONTAINER */
+/* ========================================================= */
+.auth-form {
+    /* Đặt form lên trên lớp phủ */
+    z-index: 2; 
+    
+    /* Style cơ bản của form box */
+    background-color: rgba(255, 255, 255, 0.95); /* Nền trắng trong suốt nhẹ */
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    width: 100%;
+    max-width: 400px; /* Giới hạn chiều rộng form */
+    text-align: center;
+}
+
+.auth-form h2 {
+    margin-bottom: 30px;
+    color: #333;
+    font-size: 24px;
+    font-weight: 600;
+}
+
+/* ========================================================= */
+/* 3. INPUTS & BUTTON */
+/* ========================================================= */
+.auth-form form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px; /* Khoảng cách giữa các phần tử form */
+}
+
+.auth-form input {
+    padding: 12px 15px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: border-color 0.3s;
+}
+
+.auth-form input:focus {
+    border-color: #4CAF50; /* Màu xanh lá cây khi focus */
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+}
+
+.auth-form button {
+    background-color: #4CAF50; /* Màu xanh lá cây chính */
+    color: white;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 17px;
+    font-weight: 600;
+    transition: background-color 0.3s, opacity 0.3s;
+    margin-top: 10px;
+}
+
+.auth-form button:hover:not(:disabled) {
+    background-color: #45a049;
+}
+
+.auth-form button:disabled {
+    background-color: #a5d6a7; /* Màu nhạt khi disabled */
+    cursor: not-allowed;
+    opacity: 0.8;
+}
+
+/* ========================================================= */
+/* 4. TRANG CHÍNH BUTTON */
+/* ========================================================= */
+.home-page {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    z-index: 3; /* Đặt lên trên cùng */
+    text-decoration: none;
+    color: white;
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 8px 15px;
+    border-radius: 5px;
+    font-size: 14px;
+    transition: background-color 0.3s;
+}
+
+.home-page:hover {
+    background-color: rgba(0, 0, 0, 0.7);
+}
+
+
+/* CSS cho Link chuyển đổi */
+.auth-switch {
+    margin-top: 20px;
+    font-size: 14px;
+    color: #666;
+}
+
+.auth-switch a {
+    color: #4CAF50;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s;
+}
+
+.auth-switch a:hover {
+    color: #388e3c;
+    text-decoration: underline;
+}

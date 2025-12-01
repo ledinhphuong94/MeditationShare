@@ -1,11 +1,16 @@
 import React, {useState, useEffect} from 'react';
+import * as helper from "../../common/helper.js";
 import './MessageModal.css';
+import { useUser } from '../../UserContext.js';
 
 const MessageModal = ({ formData, isOpen, onClose, onSubmit }) => {
+    const { userInfo } = useUser();
+    const { userRole, userId, username } = userInfo;
+
     const [name, setName] = useState('');
     const [message, setMessage] = useState('');
     useEffect(() => {
-        setName(formData ? formData.name : window.localStorage.getItem("meditationShare"));
+        setName(formData ? formData.name : username || window.localStorage.getItem("meditation_user_name"));
         setMessage(formData ? formData.message : '');
         const handleEscapeKey = (event) => {
             if (event.key === 'Escape' && isOpen) {
@@ -23,10 +28,27 @@ const MessageModal = ({ formData, isOpen, onClose, onSubmit }) => {
     const handleSubmit = (e) => {
         e.preventDefault();
         if (name.trim() && message.trim()) {
+            // Kiểm tra xem có link lạ không?
+            if (helper.containsForbiddenContent(name.trim())) {
+                alert("Tên không được phép chứa đường dẫn!")
+                return;
+            };
+            if (helper.containsProfanity(name.trim())) {
+                alert("Tên không hợp lệ!")
+                return;
+            };
+            if (helper.containsForbiddenContent(message.trim())) {
+                alert("Thông điệp không được chứa đường dẫn!")
+                return;
+            };
+            if (helper.containsProfanity(message.trim())) {
+                alert("Thông điệp không hợp lệ!")
+                return;
+            };
             // Gọi hàm onSubmit từ component cha, truyền dữ liệu
             onSubmit({ name, message, messId: formData ? formData.id : 0, isEdited: !!formData });
             
-            // Reset form và đóng modal
+            // // Reset form và đóng modal
             setName('');
             setMessage('');
             onClose();
@@ -65,6 +87,8 @@ const MessageModal = ({ formData, isOpen, onClose, onSubmit }) => {
                             value={message}
                             onChange={(e) => setMessage(e.target.value)}
                             rows="4"
+                            maxLength="280"
+                            placeholder="(Dưới 280 ký tự)"
                             required
                         ></textarea>
                     </div>
