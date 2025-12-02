@@ -185,6 +185,8 @@ function Dashboard() {
     };
 
     async function handleDeleteMess(item) {
+        const isConfirmed = window.confirm('Bạn có chắc chắn muốn xóa thông điệp này không?');
+        if (!isConfirmed) return;
         try {
             // Gọi hàm RPC đã tạo
             const { error } = await supabase.rpc('delete_marker_by_id', {

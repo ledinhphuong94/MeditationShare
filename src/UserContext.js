@@ -125,7 +125,14 @@ export const UserProvider = ({ children }) => {
   return (
     <UserContext.Provider value={{ userInfo, logout }}>
       {/* Chỉ hiển thị children khi đã load xong trạng thái Auth */}
-      {isLoading ? <div>Loading Authentication...</div> : children}
+      {isLoading ? <div className='loading-page'>
+            <div id="wrapper">		
+            <div id="corpus"></div>
+                <div id="spinner"></div>
+            </div>
+            <div id="text">&nbsp; Đang tải...</div>
+            
+        </div> : children}
     </UserContext.Provider>
   );
 };
