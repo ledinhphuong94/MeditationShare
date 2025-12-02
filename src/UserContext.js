@@ -44,7 +44,10 @@ export const UserProvider = ({ children }) => {
       setUserId(id);
       setUserRole(role);
       setUsername(name);
-      setIsLoading(false);
+      setTimeout(() => {
+          setIsLoading(false); // Đặt isLoading thành false sau khi đã cập nhật state
+      }, 1000);
+    //   setIsLoading(false);
   };
   
   // Hàm đăng xuất (Gọi supabase.auth.signOut)
@@ -125,14 +128,20 @@ export const UserProvider = ({ children }) => {
   return (
     <UserContext.Provider value={{ userInfo, logout }}>
       {/* Chỉ hiển thị children khi đã load xong trạng thái Auth */}
-      {isLoading ? <div className='loading-page'>
-            <div id="wrapper">		
-            <div id="corpus"></div>
-                <div id="spinner"></div>
+      {isLoading ? (
+        <div className='loading-page'>
+            <div className='loading-page-text'>Đang tải...</div>
+            <div class="holder">
+                <div class="candle">
+                    <div class="blinking-glow"></div>
+                    <div class="thread"></div>
+                    <div class="glow"></div>
+                    <div class="flame"></div>
+                </div>
             </div>
-            <div id="text">&nbsp; Đang tải...</div>
             
-        </div> : children}
+        </div>
+    ) : children}
     </UserContext.Provider>
   );
 };
