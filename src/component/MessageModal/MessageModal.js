@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import * as helper from "../../common/helper.js";
 import './MessageModal.css';
 import { useUser } from '../../UserContext.js';
@@ -9,47 +9,72 @@ const MessageModal = ({ formData, isOpen, onClose, onSubmit }) => {
 
     const [name, setName] = useState('');
     const [message, setMessage] = useState('');
+    const nameRef = useRef(null);
+    const messageRef = useRef(null);
+    const formId = formData ? formData.id : null;
+    const prevIsOpenRef = useRef(false);
+    const prevFormIdRef = useRef(formId);
+
     useEffect(() => {
-        let defaultName = username === 'Anonymous' ? '' : username;
-        setName(formData ? formData.name : defaultName || window.localStorage.getItem("meditation_user_name"));
-        setMessage(formData ? formData.message : '');
+        const opening = isOpen && !prevIsOpenRef.current;
+        const editingDifferent = isOpen && formId !== prevFormIdRef.current;
+
+        if (opening || editingDifferent) {
+            let defaultName = username === 'Anonymous' ? '' : username;
+            const initialName = formData ? formData.name : (defaultName || window.localStorage.getItem("meditation_user_name"));
+            const initialMessage = formData ? formData.message : '';
+            setName(initialName);
+            setMessage(initialMessage);
+            if (nameRef.current) nameRef.current.value = initialName;
+            if (messageRef.current) messageRef.current.value = initialMessage;
+            prevFormIdRef.current = formId;
+        }
+
+        prevIsOpenRef.current = isOpen;
+
         const handleEscapeKey = (event) => {
             if (event.key === 'Escape' && isOpen) {
                 onClose();
             }
         };
-        document.addEventListener('keydown', handleEscapeKey);
+
+        if (isOpen) document.addEventListener('keydown', handleEscapeKey);
         return () => {
-            document.removeEventListener('keydown', handleEscapeKey)
-        }
-    }, [formData, isOpen, onClose]);
+            document.removeEventListener('keydown', handleEscapeKey);
+        };
+    // Re-run when modal open state or the current editing id changes
+    }, [isOpen, formId, username, onClose, formData]);
     // Nếu modal không mở thì không render gì cả
     if (!isOpen) return null;
     
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (name.trim() && message.trim()) {
+        const currentName = nameRef.current ? nameRef.current.value : name;
+        const currentMessage = messageRef.current ? messageRef.current.value : message;
+        if (currentName.trim() && currentMessage.trim()) {
             // Kiểm tra xem có link lạ không?
-            if (helper.containsForbiddenContent(name.trim())) {
+            if (helper.containsForbiddenContent(currentName.trim())) {
                 alert("Tên không được phép chứa đường dẫn!")
                 return;
             };
-            if (helper.containsProfanity(name.trim())) {
+            if (helper.containsProfanity(currentName.trim())) {
                 alert("Tên không hợp lệ!")
                 return;
             };
-            if (helper.containsForbiddenContent(message.trim())) {
+            if (helper.containsForbiddenContent(currentMessage.trim())) {
                 alert("Thông điệp không được chứa đường dẫn!")
                 return;
             };
-            if (helper.containsProfanity(message.trim())) {
+            if (helper.containsProfanity(currentMessage.trim())) {
                 alert("Thông điệp không hợp lệ!")
                 return;
             };
             // Gọi hàm onSubmit từ component cha, truyền dữ liệu
-            onSubmit({ name, message, messId: formData ? formData.id : 0, isEdited: !!formData });
-            
-            // // Reset form và đóng modal
+            onSubmit({ name: currentName, message: currentMessage, messId: formData ? formData.id : 0, isEdited: !!formData });
+
+            // Reset uncontrolled inputs and local state, then close
+            if (nameRef.current) nameRef.current.value = '';
+            if (messageRef.current) messageRef.current.value = '';
             setName('');
             setMessage('');
             onClose();
@@ -72,8 +97,8 @@ const MessageModal = ({ formData, isOpen, onClose, onSubmit }) => {
                         <input
                             id="name"
                             type="text"
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
+                            ref={nameRef}
+                            defaultValue={name}
                             placeholder="Ví dụ: Nguyễn Văn A"
                             disabled={!!formData} 
                             required
@@ -85,8 +110,8 @@ const MessageModal = ({ formData, isOpen, onClose, onSubmit }) => {
                         <label htmlFor="message">Thông điệp của bạn:</label>
                         <textarea
                             id="message"
-                            value={message}
-                            onChange={(e) => setMessage(e.target.value)}
+                            ref={messageRef}
+                            defaultValue={message}
                             rows="4"
                             maxLength="280"
                             placeholder="(Dưới 280 ký tự)"

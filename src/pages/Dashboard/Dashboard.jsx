@@ -1,5 +1,5 @@
 import './Dashboard.css'
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { supabase } from "../../supabaseClient.js";
 import MessageModal from '../../component/MessageModal/MessageModal.js';
 import Mapty from '../../component/Mapty/Mapty.js';
@@ -135,10 +135,10 @@ function Dashboard() {
         return () => supabase.removeChannel(channel);
     }, []);
 
-    function handleCloseModal() {
+    const handleCloseModal = useCallback(() => {
         setIsOpenModal(false);
         setFormData(null);
-    }
+    }, [setIsOpenModal, setFormData]);
 
     async function handleSubmitModal(data) {
         const {name, message, isEdited, messId} = data;
@@ -231,7 +231,7 @@ function Dashboard() {
                 
                 <div className='logo'>
                 {/* <img alt='' src={logoImg}/> */}
-                © 2025 Bản đồ ánh sáng | Version 1.1
+                © 2025 Bản đồ ánh sáng | Version 1.2
                 </div>
                 <div className='logo-hidder'></div>
             </div>
