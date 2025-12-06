@@ -69,7 +69,6 @@
     
     /* Xử lý ngắt dòng cho tin nhắn quá dài */
     overflow-wrap: break-word; /* Ngắt từ tại ranh giới từ nếu cần */
-    word-break: break-all; /* Ngắt mọi nơi nếu không đủ chỗ */
 
     margin-right: 10px; /* Tạo khoảng cách với icon */
 }

@@ -5,7 +5,7 @@ import { useUser } from '../../UserContext.js';
 
 const MessageModal = ({ formData, isOpen, onClose, onSubmit }) => {
     const { userInfo } = useUser();
-    const { userRole, userId, username } = userInfo;
+    const { username } = userInfo;
 
     const [name, setName] = useState('');
     const [message, setMessage] = useState('');
