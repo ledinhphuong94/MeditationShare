@@ -4,12 +4,13 @@ import React, { useState } from 'react';
 import { supabase } from '../../supabaseClient';
 import { Link, useNavigate } from 'react-router-dom'; // Thêm useNavigate để điều hướng
 import { useUser } from '../../UserContext.js'; // Import UserContext để lấy ID ẩn danh hiện tại
+import { useTranslation } from "react-i18next";
 
 function Auth({ type }) {
     // Sử dụng useUser để lấy ID ẩn danh hiện tại (userId từ context)
     const { userInfo } = useUser();
     const navigate = useNavigate();
-
+    const { t } = useTranslation();
     const [email, setEmail] = useState('');
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
@@ -33,7 +34,7 @@ function Auth({ type }) {
 
         if (rpcError) {
             console.error('Lỗi di chuyển markers:', rpcError);
-            setMessage("Lỗi di chuyển dữ liệu cũ. Markers có thể không hiển thị.");
+            setMessage(t("auth.error_move_markers_from_anon"));
         } else {
             console.log("Di chuyển markers thành công.");
         }
@@ -75,21 +76,21 @@ function Auth({ type }) {
             if (data.user && !data.session) {
                 // Xác nhận Email được bật (Mặc định): Chỉ thông báo và di chuyển
                 await migrateMarkers(oldAnonId, newRegisteredId);
-                setMessage('Đăng ký thành công! Vui lòng kiểm tra email để xác nhận tài khoản và đăng nhập.');
+                setMessage(t("auth.register_sucess_check_email"));
                 // Tùy chọn: Chuyển hướng về trang login sau khi đăng ký
                 // navigate('/login');
             
             } else if (data.session) {
                 // Xác nhận Email bị TẮT HOẶC Đăng ký và có session ngay lập tức
                 await migrateMarkers(oldAnonId, newRegisteredId);
-                setMessage('Đăng ký và đăng nhập thành công!');
+                setMessage(t("auth.register_login_success"));
                 // Chuyển hướng về trang chính/bản đồ
                 navigate('/');
             }
 
         } else if (type === 'login' && data.session) {
              // --- Xử lý Thành công Đăng nhập ---
-             setMessage('Đăng nhập thành công!');
+             setMessage(t("auth.login_success"));
              // Auth Listener sẽ tự cập nhật Context, chỉ cần chuyển hướng
              navigate('/'); 
         }
@@ -100,33 +101,33 @@ function Auth({ type }) {
     return (
         <div className="auth-page">
             <Link to="/" className="home-page">
-                Quay lại bản đồ
+                {t("auth.back_to_map")}
             </Link>
             <div className="auth-form">
-                <h2>{type === 'register' ? 'Đăng ký Tài khoản' : 'Đăng nhập'}</h2>
+                <h2>{type === 'register' ? t("auth.register_account") : t("auth.login")}</h2>
                 <form onSubmit={handleAuth}>
                     <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email" required />
                     {type === 'register' && 
-                        <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} placeholder="Tên của bạn" required />
+                        <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} placeholder={t("auth.your_name")} required />
                     }
-                    <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Mật khẩu" required />
+                    <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder={t("auth.password")} required />
                     
                     {/* Hiển thị thông báo lỗi/thành công */}
                     {message && <p>{message}</p>}
                     
                     <button type="submit" disabled={loading}>
-                        {loading ? 'Đang xử lý...' : (type === 'register' ? 'Đăng ký' : 'Đăng nhập')}
+                        {loading ? t("common.loading") : (type === 'register' ? t("auth.register") : t("auth.login"))}
                     </button>
                 </form>
 
                 <p className="auth-switch">
                     {type === 'register' ? (
                         <>
-                            Đã có tài khoản? <Link to="/login">Đăng nhập ngay</Link>
+                            {t("auth.already_had_account_ques")} <Link to="/login">{t("auth.login_now")}</Link>
                         </>
                     ) : (
                         <>
-                            Chưa có tài khoản? <Link to="/register">Đăng ký mới</Link>
+                            {t("auth.dont_have_account_ques")} <Link to="/register">{t("auth.register_new")}</Link>
                         </>
                     )}
                 </p>

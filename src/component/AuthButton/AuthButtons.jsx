@@ -4,11 +4,14 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useUser } from '../../UserContext.js';
 import { supabase } from '../../supabaseClient.js';
 import "./AuthButtons.css";
+import { useTranslation } from "react-i18next";
+
 
 function AuthButtons() {
     const { userInfo, logout } = useUser();
-    const { userRole, userId, username } = userInfo;
+    const { userRole, username } = userInfo;
     const navigate = useNavigate();
+    const { t } = useTranslation();
     
     // Kiểm tra trạng thái
     const isAdmin = userRole === 'admin';
@@ -20,7 +23,7 @@ function AuthButtons() {
         const { error } = await supabase.auth.signOut();
         if (error) {
             console.error('Lỗi khi đăng xuất:', error);
-            alert('Không thể đăng xuất.');
+            alert(t("auth.unable_logout"));
         } else {
             logout();
             navigate('/'); 
@@ -29,7 +32,7 @@ function AuthButtons() {
     
     // Đang tải
     if (isLoading) {
-        return <div className="auth-status">Đang tải...</div>;
+        return <div className="auth-status">{t("common.loading")}</div>;
     }
 
     // Đã đăng nhập (User/Admin)
@@ -40,12 +43,12 @@ function AuthButtons() {
                 {/* 1. Nút Admin (chỉ hiển thị cho Admin) */}
                 {isAdmin && (
                     <span className="user-info">
-                        (🛠️ Quản trị viên)
+                        (🛠️ {t("auth.admin")})
                     </span>
                 )}
                 {/* 2. Nút Đăng xuất */}
                 <button onClick={handleLogout} className="btn-logout">
-                    Đăng xuất
+                    {t("auth.signout")}
                 </button>
             </div>
         );
@@ -54,12 +57,12 @@ function AuthButtons() {
     // Chưa đăng ký (hoặc là Guest/Anonymous)
     return (
         <div className="auth-actions">
-            <span className="user-info">Guest</span>
+            <span className="user-info">{t("auth.guest")}</span>
             <Link to="/login" className="btn-login">
-                Đăng nhập
+                {t("auth.login")}
             </Link>
             <Link to="/register" className="btn-register">
-                Đăng ký
+                {t("auth.register")}
             </Link>          
         </div>
     );

@@ -1,0 +1,62 @@
+{
+    "common": {
+        "loading": "Đang tải..."
+    },
+    "auth": {
+        "login": "Đăng nhập",
+        "register": "Đăng ký",
+        "register_account": "Đăng ký Tài khoản",
+        "logout": "Đăng xuất",
+        "admin": "Quản trị viên",
+        "unable_logout": "Không thể đăng xuất.",
+        "guest": "Khách",
+        "back_to_map":"Quay lại bản đồ",
+        "login_success": "Đăng nhập thành công!",
+        "register_login_success":"Đăng ký và đăng nhập thành công!",
+        "register_sucess_check_email": "Đăng ký thành công! Vui lòng kiểm tra email để xác nhận tài khoản và đăng nhập.",
+        "error_move_markers_from_anon": "Lỗi di chuyển dữ liệu cũ. Nến có thể không hiển thị.",
+        "already_had_account_ques": "Đã có tài khoản?",
+        "dont_have_account_ques": "Chưa có tài khoản?",
+        "login_now": "Đăng nhập ngay",
+        "register_new": "Đăng ký mới",
+        "password": "Mật khẩu",
+        "your_name": "Tên của bạn"
+    },
+    "admin": {
+
+    },
+    "dashboard": {
+        "light_map": "Bản đồ ánh sáng",
+        "version": "Phiên bản",
+        "tap_map_light_candle":"Chạm vào bản đồ để thắp nến",
+        "people_lit_candles": "nguời đã thắp nến",
+        "my_location":"Vị trí của tôi",
+        "getting_location":"Đang lấy vị trí...",
+        "you_are_here":"Bạn đang ở đây",
+        "error_send_mess":"Lỗi khi thêm thông điệp",
+        "error_update_mess":"Lỗi khi cập nhật thông điệp",
+        "are_you_sure_delete":"Bạn có chắc chắn muốn xóa thông điệp này không?",
+        "error_when_remove": "Lỗi khi xóa nến",
+        "fail_delete_candle": "Xóa nến thất bại."
+    },
+    "alert": {
+        "browser_not_support_location": "Trình duyệt của bạn không hỗ trợ Chia sẽ toạ độ.",
+        "refuse_share_location":"Bạn đã từ chối cấp quyền vị trí.",
+        "location_unavailable":"Thông tin vị trí không khả dụng.",
+        "location_request_timeout": "Yêu cầu vị trí quá thời gian.",
+        "unknown_error": "Đã xảy ra lỗi không xác định."
+    },
+    "messageModal": {
+        "message_to_the_world":"Hãy gửi một thông điệp đến thế giới",
+        "label_name": "Tên:",
+        "place_holder_name": "Ví dụ: Nguyễn Văn A",
+        "label_your_mess": "Thông điệp của bạn:",
+        "place_holder_mess": "(Dưới 280 ký tự)",
+        "send": "Gửi",
+        "not_allow_link_in_name":"Tên không được phép chứa đường dẫn!",
+        "not_allow_link_in_message":"Thông điệp không được chứa đường dẫn!",
+        "not_valid_name": "Tên không hợp lệ!",
+        "not_valid_message": "Thông điệp không hợp lệ!",
+        "please_fill_both": "Vui lòng nhập cả Tên và Thông điệp."
+    }
+}

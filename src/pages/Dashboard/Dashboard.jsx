@@ -9,6 +9,8 @@ import MarkupCardList from '../../component/MarkupCardList/MarkupCardList.js';
 import bellSound from "../../sound/bell2.mp3";
 import { useUser } from '../../UserContext.js';
 import AuthButtons from "../../component/AuthButton/AuthButtons.jsx";
+import LanguageSwitcher from "../../component/LanguageSwitcher/LanguageSwitcher.jsx";
+import { useTranslation } from "react-i18next";
 
 const playAudio = (audio) => {
   try {
@@ -24,6 +26,7 @@ const playAudio = (audio) => {
   }
 }
 function Dashboard() {
+    const { t } = useTranslation();
     const [markers, setMarkers] = useState([]);
     const [isOpenModal, setIsOpenModal] = useState(false);
     const [currPos, setCurrPos] = useState([null, null]);
@@ -155,7 +158,7 @@ function Dashboard() {
             },
         ]);
         if (error) {
-            alert('Lỗi khi thêm thông điệp')
+            alert(t("dashboard.error_send_mess"))
         }
 
         } else {
@@ -169,7 +172,7 @@ function Dashboard() {
             .eq('user_id', userId)
 
         if (error) {
-            alert('Lỗi khi cập nhật thông điệp')
+            alert(t("dashboard.error_update_mess"))
         }
         }
     }
@@ -185,7 +188,7 @@ function Dashboard() {
     };
 
     async function handleDeleteMess(item) {
-        const isConfirmed = window.confirm('Bạn có chắc chắn muốn xóa thông điệp này không?');
+        const isConfirmed = window.confirm(t("dashboard.are_you_sure_delete"));
         if (!isConfirmed) return;
         try {
             // Gọi hàm RPC đã tạo
@@ -195,17 +198,17 @@ function Dashboard() {
 
             if (error) {
                 // Lỗi sẽ bao gồm cả lỗi "Permission denied" từ SQL Function
-                alert(`Lỗi khi xóa marker: ${error.message}`);
+                alert(`${t("dashboard.error_when_remove")}: ${error.message}`);
                 console.error('Lỗi khi gọi RPC xóa marker:', error);
                 return;
             }
 
             // Nếu thành công, sự kiện xóa sẽ được Realtime lắng nghe và cập nhật giao diện (Bước 3)
-            alert(`Marker ID ${item.id} đã được xóa thành công.`);
+            alert(`Nến ID ${item.id} đã được xóa thành công.`);
 
         } catch (e) {
             console.error("Lỗi mạng hoặc lỗi không xác định:", e);
-            alert("Xóa marker thất bại.");
+            alert(t("dashboard.fail_delete_candle"));
         }
     };
 
@@ -231,13 +234,17 @@ function Dashboard() {
                 
                 <div className='logo'>
                 {/* <img alt='' src={logoImg}/> */}
-                © 2025 Bản đồ ánh sáng | Version 1.2
+                © 2025 {t("dashboard.light_map")} | {t("dashboard.version")} 1.3
                 </div>
                 <div className='logo-hidder'></div>
             </div>
 
             <div className="container-right">
-                <AuthButtons />
+                <div className='right-top-header'>
+                    <AuthButtons />
+                    <LanguageSwitcher />
+                </div>
+                
                 <MarkupCardHeader totalUsers={totalUsers} />
                 <MarkupCardList
                     markers={markers}

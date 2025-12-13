@@ -2,9 +2,10 @@ import './MyLocationButton.css';
 import React, { useState, useEffect } from 'react';
 import { Popup, CircleMarker  } from "react-leaflet";
 import { GiPositionMarker } from "react-icons/gi";
-
+import { useTranslation } from "react-i18next";
 
 const MyLocationButton = ({mapRef, handleClickOnMap}) => {
+  const { t } = useTranslation();
   const map = mapRef.current;
   useEffect(() => {
       const pos = JSON.parse(localStorage.getItem('meditation_currPos'));
@@ -31,9 +32,8 @@ const MyLocationButton = ({mapRef, handleClickOnMap}) => {
 
     // Kiểm tra xem trình duyệt có hỗ trợ Geolocation không
     if (!navigator.geolocation) {
-      // setError('Trình duyệt của bạn không hỗ trợ Chia sẽ toạ độ.');
       setIsLoading(false);
-      alert('Trình duyệt của bạn không hỗ trợ Chia sẽ toạ độ.');
+      alert(t("alert.browser_not_support_location"));
       return;
     }
 
@@ -57,20 +57,19 @@ const MyLocationButton = ({mapRef, handleClickOnMap}) => {
       },
       (err) => {
         // Xử lý lỗi (ví dụ: người dùng từ chối cấp quyền)
-        console.error("Lỗi Geolocation:", err);
         let errorMessage = '';
         switch (err.code) {
           case err.PERMISSION_DENIED:
-            errorMessage = 'Bạn đã từ chối cấp quyền vị trí.';
+            errorMessage = t("alert.refuse_share_location");
             break;
           case err.POSITION_UNAVAILABLE:
-            errorMessage = 'Thông tin vị trí không khả dụng.';
+            errorMessage = t("alert.location_unavailable");
             break;
           case err.TIMEOUT:
-            errorMessage = 'Yêu cầu vị trí quá thời gian.';
+            errorMessage = t("alert.location_request_timeout");
             break;
           default:
-            errorMessage = 'Đã xảy ra lỗi không xác định.';
+            errorMessage = t("alert.unknown_error");
         }
         // setError(errorMessage);
         setIsLoading(false);
@@ -95,7 +94,7 @@ const MyLocationButton = ({mapRef, handleClickOnMap}) => {
         disabled={isLoading}
       >
         <GiPositionMarker size={13} />
-        {isLoading ? 'Đang lấy vị trí...' : 'Vị trí của tôi'}
+        {isLoading ? t("dashboard.getting_location") : t("dashboard.my_location")}
       </button>
       {
         currLocation ? 
@@ -114,7 +113,7 @@ const MyLocationButton = ({mapRef, handleClickOnMap}) => {
               } 
           }}
         >
-            <Popup>Bạn đang ở đây</Popup>
+            <Popup>{t("dashboard.you_are_here")}</Popup>
           </CircleMarker> : ''       
       }
       

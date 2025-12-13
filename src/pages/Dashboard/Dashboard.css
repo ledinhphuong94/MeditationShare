@@ -119,6 +119,12 @@
   background-repeat: no-repeat;
 }
 
+.right-top-header {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
 /* 📱 Mobile Responsive */
 @media (max-width: 962px) {
   .markup-header {

@@ -2,11 +2,12 @@ import React, {useState, useEffect, useRef} from 'react';
 import * as helper from "../../common/helper.js";
 import './MessageModal.css';
 import { useUser } from '../../UserContext.js';
+import { useTranslation } from "react-i18next";
 
 const MessageModal = ({ formData, isOpen, onClose, onSubmit }) => {
     const { userInfo } = useUser();
     const { username } = userInfo;
-
+    const { t } = useTranslation();
     const [name, setName] = useState('');
     const [message, setMessage] = useState('');
     const nameRef = useRef(null);
@@ -54,19 +55,19 @@ const MessageModal = ({ formData, isOpen, onClose, onSubmit }) => {
         if (currentName.trim() && currentMessage.trim()) {
             // Kiểm tra xem có link lạ không?
             if (helper.containsForbiddenContent(currentName.trim())) {
-                alert("Tên không được phép chứa đường dẫn!")
+                alert(t("messageModal.not_allow_link_in_name"))
                 return;
             };
             if (helper.containsProfanity(currentName.trim())) {
-                alert("Tên không hợp lệ!")
+                alert(t("messageModal.not_valid_name"))
                 return;
             };
             if (helper.containsForbiddenContent(currentMessage.trim())) {
-                alert("Thông điệp không được chứa đường dẫn!")
+                alert(t("messageModal.not_allow_link_in_message"))
                 return;
             };
             if (helper.containsProfanity(currentMessage.trim())) {
-                alert("Thông điệp không hợp lệ!")
+                alert(t("messageModal.not_valid_message"))
                 return;
             };
             // Gọi hàm onSubmit từ component cha, truyền dữ liệu
@@ -79,7 +80,7 @@ const MessageModal = ({ formData, isOpen, onClose, onSubmit }) => {
             setMessage('');
             onClose();
         } else {
-            alert('Vui lòng nhập cả Tên và Thông điệp.');
+            alert(t("messageModal.please_fill_both"));
         }
     };
 
@@ -89,17 +90,17 @@ const MessageModal = ({ formData, isOpen, onClose, onSubmit }) => {
                 
                 <button className="close-button" onClick={onClose}>&times;</button>
                 
-                <h2>Hãy gửi một thông điệp đến thế giới</h2>
+                <h2>{t("messageModal.message_to_the_world")}</h2>
                 
                 <form onSubmit={handleSubmit}>
                     <div className="form-group">
-                        <label htmlFor="name">Tên:</label>
+                        <label htmlFor="name">{t("messageModal.label_name")}</label>
                         <input
                             id="name"
                             type="text"
                             ref={nameRef}
                             defaultValue={name}
-                            placeholder="Ví dụ: Nguyễn Văn A"
+                            placeholder={t("messageModal.place_holder_name")}
                             disabled={!!formData} 
                             required
                             style={{ backgroundColor: !!formData ? '#f0f0f0' : 'white' }}
@@ -107,19 +108,19 @@ const MessageModal = ({ formData, isOpen, onClose, onSubmit }) => {
                     </div>
 
                     <div className="form-group">
-                        <label htmlFor="message">Thông điệp của bạn:</label>
+                        <label htmlFor="message">{t("messageModal.label_your_mess")}</label>
                         <textarea
                             id="message"
                             ref={messageRef}
                             defaultValue={message}
                             rows="4"
                             maxLength="280"
-                            placeholder="(Dưới 280 ký tự)"
+                            placeholder={t("messageModal.place_holder_mess")}
                             required
                         ></textarea>
                     </div>
 
-                <button type="submit" className="submit-button">Gửi</button>
+                <button type="submit" className="submit-button">{t("messageModal.send")}</button>
                 </form>
             </div>
         </div>

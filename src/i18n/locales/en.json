@@ -1,0 +1,62 @@
+{
+    "common": {
+        "loading": "Loading..."
+    },
+    "auth": {
+        "login": "Login",
+        "register": "Sign up",
+        "register_account": "Register new account",
+        "logout": "Logout",
+        "admin": "Admin",
+        "unable_logout": "Unable to logout",
+        "guest": "Guest",
+        "back_to_map":"Back to map",
+        "login_success": "Login successful!",
+        "register_login_success":"Sign up and login successful!",
+        "register_sucess_check_email": "Sign up successful! Please check your email to confirm your account and log in.",
+        "error_move_markers_from_anon": "Error migrating old data. Candles may not display.",
+        "already_had_account_ques": "Already have an account?",
+        "dont_have_account_ques": "Don't have an account?",
+        "login_now": "Login now",
+        "register_new": "Register a new account",
+        "password": "Password",
+        "your_name": "Your name"
+    },
+    "admin": {
+
+    },
+    "dashboard": {
+        "light_map": "Light Map",
+        "version": "Version",
+        "tap_map_light_candle": "Tap the map to light a candle",
+        "people_lit_candles": "people lit candles",
+        "my_location":"My location",
+        "getting_location":"Getting location...",
+        "you_are_here":"You are here",
+        "error_send_mess":"Error when adding message",
+        "error_update_mess":"Error when updating message",
+        "are_you_sure_delete":"Are you sure you want to delete this message?",
+        "error_when_remove": "Error when removing candle",
+        "fail_delete_candle": "Fail to delete candle."
+    },
+    "alert": {
+        "browser_not_support_location": "Your browser does not support location sharing.",
+        "refuse_share_location":"You have declined to share location.",
+        "location_unavailable":"Location information is unavailable.",
+        "location_request_timeout": "Location request timed out.",
+        "unknown_error": "An unknown error occurred."
+    },
+    "messageModal": {
+        "message_to_the_world": "Let's send a message to the world",
+        "label_name": "Name:",
+        "place_holder_name": "Your name",
+        "label_your_mess": "Your message:",
+        "place_holder_mess": "(Under 280 characters)",
+        "send": "Send",
+        "not_allow_link_in_name": "Name cannot contain links!",
+        "not_allow_link_in_message": "Message cannot contain links!",
+        "not_valid_name": "Name is invalid!",
+        "not_valid_message": "Message is invalid!",
+        "please_fill_both": "Please fill both Name and Message."
+    }
+}
