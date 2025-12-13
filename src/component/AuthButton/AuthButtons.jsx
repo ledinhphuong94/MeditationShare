@@ -48,7 +48,7 @@ function AuthButtons() {
                 )}
                 {/* 2. Nút Đăng xuất */}
                 <button onClick={handleLogout} className="btn-logout">
-                    {t("auth.signout")}
+                    {t("auth.logout")}
                 </button>
             </div>
         );

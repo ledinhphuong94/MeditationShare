@@ -6,8 +6,8 @@
     display: flex;
     gap: 5px; /* Khoảng cách giữa các nút */
     align-items: center;
-    padding: 5px 10px 0 0; /* Padding trên/phải cho container-right */
-    width: 60%; /* Chiếm toàn bộ chiều rộng của container-right */
+    padding: 0; /* Padding trên/phải cho container-right */
+    width: 70%; /* Chiếm toàn bộ chiều rộng của container-right */
     justify-content: flex-start; /* Đẩy các nút sang phải */
     margin: 5px 10px;
 }
