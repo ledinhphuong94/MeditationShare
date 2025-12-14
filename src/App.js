@@ -15,17 +15,17 @@ function AppWrapper() {
     return (
         <BrowserRouter>
             <Routes>
-                {/* <Route path="/" element={<Dashboard />} /> 
+                <Route path="/" element={<Dashboard />} /> 
                 <Route path="/login" element={<Auth type="login" />} />
                 <Route path="/register" element={<Auth type="register" />} />
                 <Route element={<AdminRoute />}>
                     <Route path="/admin" element={<Admin />} />
                 </Route>
 
-                <Route path="*" element={<div>404 - Không tìm thấy trang</div>} /> */}
+                <Route path="*" element={<div>404 - Không tìm thấy trang</div>} />
 
                 {/* Tùy chọn: Trang 404 */}
-                <Route path="*" element={<MaintenancePage />} />
+                {/* <Route path="*" element={<MaintenancePage />} /> */}
             </Routes>
         </BrowserRouter>
     );
