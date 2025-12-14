@@ -13,10 +13,15 @@ export default function MarkupCardList({ markers, activeId, mapRef, handleUpdate
         // scroll to the card
         el.scrollIntoView({ behavior: "smooth", block: "center" });
 
-        // highlight 2 seconds
+        // // highlight 2 seconds
         el.classList.add("card-highlight");
-        setTimeout(() => el.classList.remove("card-highlight"), 2000);
-
+        const timerId = setTimeout(() => el.classList.remove("card-highlight"), 2000);
+        return () => {
+            clearTimeout(timerId);
+            if (el) {
+                el.classList.remove("card-highlight");
+            }
+        };
     }, [activeId]);
 
     return (

@@ -123,7 +123,21 @@
   display: flex;
   justify-content: space-around;
   align-items: center;
+  flex-wrap: wrap;
 }
+
+@media (max-width: 1042px) {
+    .auth-actions {
+      width: 100% !important;
+    }
+
+    .list-markups {
+    /* Giữ nguyên chiều cao và overflow cho danh sách cuộn */
+      height: calc(100% - 200px) !important;
+
+    } 
+}
+
 
 /* 📱 Mobile Responsive */
 @media (max-width: 962px) {
@@ -143,6 +157,10 @@
   .total-users {
     font-size: 10px !important;
     margin: 5px !important;
+  }
+
+  .auth-actions {
+    width: 50% !important;
   }
 }
 

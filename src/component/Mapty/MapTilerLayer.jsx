@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useMap } from 'react-leaflet'; 
 import * as L from 'leaflet';
 
@@ -12,14 +12,16 @@ const YOUR_API_KEY = process.env.REACT_APP_MAPTILER_API_KEY;
 const CUSTOM_STYLE_ID = process.env.REACT_APP_MAPTILER_CUSTOM_STYLE_ID; 
 const FULL_STYLE_URL = `https://api.maptiler.com/maps/${CUSTOM_STYLE_ID}/style.json`;
 
-const MapTilerVectorLayer = () => {
+const MapTilerVectorLayer = ({ lang }) => {
     const map = useMap(); // Lấy đối tượng map (của Leaflet)
+    const mtLayerRef = useRef(null);
+    const [isMapTilerLoaded, setIsMapTilerLoaded] = useState(false);
 
     useEffect(() => {
         // Kiểm tra xem lớp đã tồn tại chưa để tránh thêm nhiều lần
         if (!map) return;
 
-        // 3. Khởi tạo lớp MapTiler Layer
+        // 3. Khởi tạo lớp MapTiler Layer với language
         const mtLayer = new MaptilerLayer({
             // Sử dụng API Key và ID Style đã tùy chỉnh của bạn
             apiKey: YOUR_API_KEY, 
@@ -32,13 +34,33 @@ const MapTilerVectorLayer = () => {
 
         // 4. Thêm lớp vào bản đồ Leaflet
         mtLayer.addTo(map);
+        mtLayerRef.current = mtLayer;
 
-        // 5. Dọn dẹp: xóa lớp khi component bị hủy
+        // Lấy đối tượng MapLibre GL instance bên trong
+        const mapTilerInstance = mtLayer.getMaptilerSDKMap();
+        if (mapTilerInstance) {
+            mapTilerInstance.on('load', () => {
+                setIsMapTilerLoaded(true); // Cập nhật state khi bản đồ tải xong
+                console.log("MapTiler instance loaded successfully.");
+            });
+        }
+
+        // 5. Dọn dẹp: xóa lớp khi component bị hủy hoặc lang thay đổi
         return () => {
             map.removeLayer(mtLayer);
+            if (mtLayerRef.current) {
+                mtLayerRef.current.remove();
+            }
         };
 
-    }, [map]);
+    }, [map]); // Thêm lang vào dependency
+
+    useEffect(() => {
+        if (mtLayerRef.current && isMapTilerLoaded && lang) {
+            // Gọi setLanguage trực tiếp trên MaptilerLayer instance
+            mtLayerRef.current.setLanguage(lang);
+        }
+    }, [lang, isMapTilerLoaded]);
 
     // Component này không render gì trong DOM, nó chỉ quản lý lớp bản đồ
     return null; 

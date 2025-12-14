@@ -26,7 +26,7 @@ const playAudio = (audio) => {
   }
 }
 function Dashboard() {
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
     const [markers, setMarkers] = useState([]);
     const [isOpenModal, setIsOpenModal] = useState(false);
     const [currPos, setCurrPos] = useState([null, null]);
@@ -226,10 +226,11 @@ function Dashboard() {
 
             <div className="container-left">
                 <Mapty
-                markers={markers} 
-                handleClickOnMap={handleClickOnMap}
-                onMarkerClick={(id) => setActiveId(id)} 
-                mapRef={mapRef}
+                    markers={markers} 
+                    handleClickOnMap={handleClickOnMap}
+                    onMarkerClick={(id) => setActiveId(id)} 
+                    mapRef={mapRef}
+                    lang={i18n.language}
                 />
                 
                 <div className='logo'>

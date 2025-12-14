@@ -7,7 +7,7 @@ import MyLocationButton from "../MyLocationButton/MyLocationButton.js"
 import DynamicMarker from "./DynamicMarker.js";
 import MapTilerVectorLayer from './MapTilerLayer.jsx';
 
-const Mapty = ({ markers, handleClickOnMap, onMarkerClick, mapRef }) => {
+const Mapty = ({ markers, handleClickOnMap, onMarkerClick, mapRef, lang }) => {
     // ============================
     // Click map để tạo marker
     // ============================
@@ -35,7 +35,7 @@ const Mapty = ({ markers, handleClickOnMap, onMarkerClick, mapRef }) => {
             {/* <TileLayer
                 url={`https://api.maptiler.com/maps/hybrid/{z}/{x}/{y}.jpg?key=${key}`}
             /> */}
-            <MapTilerVectorLayer />
+            <MapTilerVectorLayer lang={lang} />
              
             <MapClickHandler />
 
@@ -47,8 +47,8 @@ const Mapty = ({ markers, handleClickOnMap, onMarkerClick, mapRef }) => {
                         keyProp={m.id} 
                         position={[m.lat, m.lng]}
                         eventHandlers={{
-                            click: () => {
-                                onMarkerClick(m.id) 
+                            click: (e) => {
+                                onMarkerClick(m.id);
                             } 
                         }}
                     >

@@ -9,7 +9,7 @@
     padding: 0; /* Padding trên/phải cho container-right */
     width: 70%; /* Chiếm toàn bộ chiều rộng của container-right */
     justify-content: flex-start; /* Đẩy các nút sang phải */
-    margin: 5px 10px;
+    margin: 10px;
 }
 
 /* ========================================================= */
