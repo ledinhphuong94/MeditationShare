@@ -6,6 +6,7 @@ import Auth from './pages/Auth/Auth.jsx';
 import Admin from './pages/Admin/Admin.jsx'; // Component Admin bạn sẽ tạo
 import AdminRoute from './routes/Admin.Route.jsx';
 import Dashboard from './pages/Dashboard/Dashboard.jsx'; // Component chứa Mapty, MarkupCardList, v.v.
+import MaintenancePage from "./pages/Maintenance/maintenance.jsx";
 
 // Component chính chứa Routes
 function AppWrapper() {
@@ -14,20 +15,17 @@ function AppWrapper() {
     return (
         <BrowserRouter>
             <Routes>
-                {/* 1. Trang chính (Map và List) */}
-                <Route path="/" element={<Dashboard />} /> 
-
-                {/* 2. Trang Đăng nhập/Đăng ký */}
+                {/* <Route path="/" element={<Dashboard />} /> 
                 <Route path="/login" element={<Auth type="login" />} />
                 <Route path="/register" element={<Auth type="register" />} />
-
-                {/* 3. Route Bảo vệ (Chỉ Admin) */}
                 <Route element={<AdminRoute />}>
                     <Route path="/admin" element={<Admin />} />
                 </Route>
 
+                <Route path="*" element={<div>404 - Không tìm thấy trang</div>} /> */}
+
                 {/* Tùy chọn: Trang 404 */}
-                <Route path="*" element={<div>404 - Không tìm thấy trang</div>} />
+                <Route path="*" element={<MaintenancePage />} />
             </Routes>
         </BrowserRouter>
     );
