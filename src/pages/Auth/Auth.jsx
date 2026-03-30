@@ -8,11 +8,11 @@ import { useTranslation } from "react-i18next";
 
 function Auth({ type }) {
     // Sử dụng useUser để lấy ID ẩn danh hiện tại (userId từ context)
-    const { userInfo } = useUser();
+    const { userInfo, setUserId, setUsername } = useUser();
     const navigate = useNavigate();
     const { t } = useTranslation();
     const [email, setEmail] = useState('');
-    const [username, setUsername] = useState('');
+    const [username, setUsernameAuth] = useState('');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState('');
@@ -58,7 +58,25 @@ function Auth({ type }) {
             });
         } else {
             // --- 2. Đăng nhập ---
-            authAction = supabase.auth.signInWithPassword({ email, password });
+            // authAction = supabase.auth.signInWithPassword({ email, password });
+
+            const data = await fetch(`http://localhost:3333/api/auth/signin`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email, password }),
+            });
+            const res = await data.json();
+            console.log('>>> res', res);
+            if (res.statusCode === 400) return;
+            const {userId, full_name} = res.data;
+            setUserId(res.data.userId);
+            setUsername(res.data.full_name);
+            localStorage.setItem('access-token-local-server', res.data.accessToken);
+            localStorage.setItem('user-info', JSON.stringify({userId: userId, full_name: full_name}));
+            navigate('/chats');
+            return;
         }
 
         const { data, error } = await authAction;
@@ -98,6 +116,18 @@ function Auth({ type }) {
         setLoading(false);
     };
 
+    function fetchAPILoginGoogle() {
+        window.location.href = `http://localhost:3333/api/auth/signin-google`
+        // console.log('CLICK!')
+        // const response = await fetch(`http://localhost:3333/api/auth/signin-google`);
+        // console.log('response', response)
+        // const token = await JSON.parse(data)
+        // response.json().then(data => {
+        //     console.log('>>> token', data)
+        // })
+     
+    };
+
     return (
         <div className="auth-page">
             <Link to="/" className="home-page">
@@ -108,7 +138,7 @@ function Auth({ type }) {
                 <form onSubmit={handleAuth}>
                     <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email" required />
                     {type === 'register' && 
-                        <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} placeholder={t("auth.your_name")} required />
+                        <input type="text" value={username} onChange={(e) => setUsernameAuth(e.target.value)} placeholder={t("auth.your_name")} required />
                     }
                     <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder={t("auth.password")} required />
                     
@@ -118,8 +148,10 @@ function Auth({ type }) {
                     <button type="submit" disabled={loading}>
                         {loading ? t("common.loading") : (type === 'register' ? t("auth.register") : t("auth.login"))}
                     </button>
-                </form>
 
+                   
+                </form>
+                 <button onClick={fetchAPILoginGoogle}>Google login</button>
                 <p className="auth-switch">
                     {type === 'register' ? (
                         <>

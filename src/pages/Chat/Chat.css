@@ -1,0 +1,106 @@
+.chat-container {
+    display: flex;
+    /* height: calc(100vh - 200px); */
+   
+}
+
+.chat-user-list {
+    width: 20%;
+    border: 1px solid #ff0000;
+    overflow-y: auto;
+    overflow-x: hidden;
+    height: calc(100vh - 50px);
+}
+
+.chat-user-list li:hover {
+    background-color: #bdabab;
+}
+
+.chat-groups {
+    width: 30%;
+    border: 1px solid #00f2ff;
+}
+
+.chat-groups li:hover {
+    background-color: #bdabab;
+}
+.selected {
+    background-color: #a8a4a4;
+}
+
+.chat-box {
+    flex: 1;
+}
+
+.chat-messages {
+    height: calc(100vh - 200px);
+    overflow-y: auto;
+    border: 1px solid #00ff04;
+    padding: 10px;
+}
+
+.chat-input {
+    display: flex;
+    border-top: 1px solid #ccc;
+    padding: 10px;
+}
+.chat-input input {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+.chat-input button {
+    margin-left: 10px;
+    padding: 10px 20px;
+    border: none;
+    background-color: #28a745;
+    color: white;
+    border-radius: 4px;
+}
+.chat-input button:hover {
+    background-color: #218838;
+}
+
+.message {
+    margin-bottom: 10px; 
+    display: flex;
+    justify-content: flex-start;
+}
+
+.message-content-wrap {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: rgb(216, 202, 183);
+    width: fit-content;
+    padding: 10px;
+}
+
+.message[who="you"] {
+    justify-content: flex-end;
+}
+
+.message[who="you"] .message-content-wrap{
+    background-color: #257fc0;
+    color: white;
+}
+
+.message-sender {
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+}
+.message-sender img {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.message-content-wrap small {
+    display: block;
+    margin-top: 8px;
+    font-size: 0.7em;
+    color: #3c3b3b;
+    text-align: right;
+}

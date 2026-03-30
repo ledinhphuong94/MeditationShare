@@ -113,7 +113,8 @@
 .container-right {
   flex: 0 0 25%;
   /* border-left: 1px solid #ddd; */
-  background-image: url(../../img/sunrise.jpg) !important;
+  /* background-image: url(../../img/sunrise.jpg) !important; */
+  background-image: url('http://localhost:3333/img/upload/avatar-1766451147367-35779062.jpg') !important;
   background-position: left; 
   background-size:cover;
   background-repeat: no-repeat;

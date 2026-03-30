@@ -5,15 +5,16 @@ import { useUser } from '../UserContext';
 import Admin from "../pages/Admin/Admin.jsx";
 
 const AdminRoute = () => {
-    const { userRole } = useUser();
+    const { userInfo } = useUser();
+    console.log('userRole', userInfo.userRole)
 
     // Dùng cho trường hợp Auth đang tải
-    if (userRole === 'loading') {
+    if (userInfo.userRole === 'loading') {
         return <div className="loading-screen">Đang kiểm tra quyền...</div>;
     }
 
     // Nếu không phải admin, chuyển hướng về trang chủ
-    if (userRole !== 'admin') {
+    if (userInfo.userRole !== 'admin') {
         return <Navigate to="/" replace />;
     }
 
