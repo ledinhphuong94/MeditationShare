@@ -1,11 +1,11 @@
 // components/AdminRoute.js
 import React from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
-import { useUser } from '../UserContext';
+import { useAuth } from '../context/AuthContext.js';
 import Admin from "../pages/Admin/Admin.jsx";
 
 const AdminRoute = () => {
-    const { userRole } = useUser();
+    const { userRole } = useAuth();
 
     // Dùng cho trường hợp Auth đang tải
     if (userRole === 'loading') {

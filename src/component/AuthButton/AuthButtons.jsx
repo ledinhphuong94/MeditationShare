@@ -1,14 +1,14 @@
 // components/AuthButtons.js
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useUser } from '../../UserContext.js';
+import { useAuth } from '../../context/AuthContext.js';
 import { supabase } from '../../supabaseClient.js';
 import "./AuthButtons.css";
 import { useTranslation } from "react-i18next";
 
 
 function AuthButtons() {
-    const { userInfo, logout } = useUser();
+    const { userInfo, logout } = useAuth();
     const { userRole, username } = userInfo;
     const navigate = useNavigate();
     const { t } = useTranslation();

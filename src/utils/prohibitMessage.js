@@ -25,7 +25,7 @@ export function containsForbiddenContent(inputString) {
     return regex.test(lowerCaseInput);
 }
 
-const forbiddenWords_vi = ['đụ', 'lồn', 'cặc', 'địt', 'buồi', 'chửi thề', 'thằng chó', "giái", "nứng", "chó đẻ", "súc vật", "chóđẻ" /* thêm các từ khác */];
+const forbiddenWords_vi = ['đụ', 'lồn', 'cặc', 'địt', 'buồi', 'chửi thề', 'thằng chó', "giái", "nứng", "chó đẻ", "súc vật", "chóđẻ", "chó", "đỉ" /* thêm các từ khác */];
 const forbiddenWords_en = ['fuck', 'shit', 'asshole', 'bitch', 'damn', 'crap', "ass", "f.u.c.k" /* thêm các từ khác */];
 
 export function containsProfanity(inputString) {

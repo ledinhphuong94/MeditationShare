@@ -2,15 +2,19 @@ import './Dashboard.css'
 import { useEffect, useState, useRef, useCallback } from "react";
 import { supabase } from "../../supabaseClient.js";
 import MessageModal from '../../component/MessageModal/MessageModal.js';
-import Mapty from '../../component/Mapty/Mapty.js';
+import Mapty from '../../component/Mapty/Mapty.jsx';
 import MarkupCardHeader from '../../component/MarkupCardHeader/MarkupCardHeader.js';
 import MarkupCardList from '../../component/MarkupCardList/MarkupCardList.js';
 // import logoImg from "./img/logo.png";
 import bellSound from "../../sound/bell2.mp3";
-import { useUser } from '../../UserContext.js';
+import { useAuth } from '../../context/AuthContext.js';
+import { useUsersContext } from '../../context/UsersContext.js';
 import AuthButtons from "../../component/AuthButton/AuthButtons.jsx";
 import LanguageSwitcher from "../../component/LanguageSwitcher/LanguageSwitcher.jsx";
 import { useTranslation } from "react-i18next";
+import TabsSwitcher from '../../component/TabsSwitcher/TabsSwitcher.jsx';
+import UserCardList from '../../component/UserCardList/UserCardList.jsx';
+import ChatDrawer from '../../component/ChatDrawer/ChatDrawer.jsx';
 
 const playAudio = (audio) => {
   try {
@@ -34,10 +38,14 @@ function Dashboard() {
     const [isEffectActive, setIsEffectActive] = useState(false);
     const [formData, setFormData] = useState(null);
     const mapRef = useRef(null);
-    const { userInfo } = useUser();
+    const { userInfo } = useAuth();
     const { userRole, userId } = userInfo;
     const [totalUsers, setTotalUsers] = useState(0);
-
+    const [activeTab, setActiveTab] = useState('candles');
+    const { users, myLocation } = useUsersContext();
+    const [activeUserId, setActiveUserId] = useState(null);
+    const [chatTarget, setChatTarget] = useState(null)
+   
     const handleGlowingEffect = () => {
             if (isEffectActive) {
                 setIsEffectActive(false);
@@ -61,20 +69,6 @@ function Dashboard() {
         }
     }
 
-  // useEffect(() => {
-  //   supabase.auth.getSession().then(async ({ data: { session } }) => {
-  //     if (!session) {
-  //       const { data } = await supabase.auth.signInAnonymously();
-  //       login(data.session.user.id);
-  //     } else {
-  //       login(session.user.id);
-  //     }
-  //   });
-
-  //   supabase.auth.onAuthStateChange((_event, session) => {
-  //     if (session) login(session.user.id);
-  //   });
-  // }, []);
    // ============================
   // 2. Load markers ban đầu
   // ============================
@@ -137,6 +131,12 @@ function Dashboard() {
 
         return () => supabase.removeChannel(channel);
     }, []);
+
+    useEffect(() => {
+        if (!userId || userRole === 'anon') {
+            setActiveTab('candles')
+        }
+    }, [userId, userRole])
 
     const handleCloseModal = useCallback(() => {
         setIsOpenModal(false);
@@ -231,6 +231,10 @@ function Dashboard() {
                     onMarkerClick={(id) => setActiveId(id)} 
                     mapRef={mapRef}
                     lang={i18n.language}
+                    activeTab={activeTab}  
+                    users={users}
+                    onUserMarkerClick={(userId) => setActiveUserId(userId)}
+                    myUserId={userId}
                 />
                 
                 <div className='logo'>
@@ -245,15 +249,42 @@ function Dashboard() {
                     <AuthButtons />
                     <LanguageSwitcher />
                 </div>
-                
-                <MarkupCardHeader totalUsers={totalUsers} />
-                <MarkupCardList
-                    markers={markers}
-                    activeId={activeId}
-                    mapRef={mapRef}
-                    handleUpdateMess={handleUpdateMess}
-                    handleDeleteMess={handleDeleteMess}
+
+                <TabsSwitcher
+                    myUserRole={userRole}
+                    activeTab={activeTab}
+                    onChange={(tab) => setActiveTab(tab)}
                 />
+                
+                {activeTab === 'candles' ? (
+                    <>
+                        <MarkupCardHeader totalUsers={totalUsers} />
+                        <MarkupCardList
+                            markers={markers}
+                            activeId={activeId}
+                            mapRef={mapRef}
+                            handleUpdateMess={handleUpdateMess}
+                            handleDeleteMess={handleDeleteMess}
+                        />
+                    </>
+                ) : (
+                    <>
+                        <UserCardList
+                            myUserId={userId}
+                            users={users}
+                            mapRef={mapRef}
+                            activeUserId={activeUserId} 
+                            onSendMessage={(user) => setChatTarget(user)}
+                        />
+
+                        <ChatDrawer
+                            open={!!chatTarget}
+                            onClose={() => setChatTarget(null)}
+                            currentUser={{ id: userInfo.userId }}
+                            targetUser={chatTarget}
+                        />
+                    </>
+                )}
             </div>
 
             </div>

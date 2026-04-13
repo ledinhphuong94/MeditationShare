@@ -3,12 +3,12 @@ import './Auth.css'
 import React, { useState } from 'react';
 import { supabase } from '../../supabaseClient';
 import { Link, useNavigate } from 'react-router-dom'; // Thêm useNavigate để điều hướng
-import { useUser } from '../../UserContext.js'; // Import UserContext để lấy ID ẩn danh hiện tại
+import { useAuth } from '../../context/AuthContext.js'; // Import UserContext để lấy ID ẩn danh hiện tại
 import { useTranslation } from "react-i18next";
 
 function Auth({ type }) {
-    // Sử dụng useUser để lấy ID ẩn danh hiện tại (userId từ context)
-    const { userInfo } = useUser();
+    // Sử dụng useAuth để lấy ID ẩn danh hiện tại (userId từ context)
+    const { userInfo } = useAuth();
     const navigate = useNavigate();
     const { t } = useTranslation();
     const [email, setEmail] = useState('');

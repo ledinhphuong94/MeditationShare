@@ -1,11 +1,11 @@
 import React, {useState, useEffect, useRef} from 'react';
-import * as helper from "../../common/helper.js";
+import * as helper from "../../utils/prohibitMessage.js";
 import './MessageModal.css';
-import { useUser } from '../../UserContext.js';
+import { useAuth } from '../../context/AuthContext.js';
 import { useTranslation } from "react-i18next";
 
 const MessageModal = ({ formData, isOpen, onClose, onSubmit }) => {
-    const { userInfo } = useUser();
+    const { userInfo } = useAuth();
     const { username } = userInfo;
     const { t } = useTranslation();
     const [name, setName] = useState('');

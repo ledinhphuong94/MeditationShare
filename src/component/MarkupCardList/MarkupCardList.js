@@ -2,10 +2,10 @@ import './MarkupCardList.css'
 import { useEffect } from "react";
 import { BiMessageSquareEdit } from "react-icons/bi";
 import { MdDeleteForever } from "react-icons/md";
-import { useUser } from '../../UserContext.js';
+import { useAuth } from '../../context/AuthContext.js';
 
 export default function MarkupCardList({ markers, activeId, mapRef, handleUpdateMess, handleDeleteMess }) {
-    const { userInfo } = useUser();
+    const { userInfo } = useAuth();
 
     useEffect(() => {
         const el = document.querySelector(`[data-id="${activeId}"]`);

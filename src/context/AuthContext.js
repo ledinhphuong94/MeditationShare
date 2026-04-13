@@ -1,9 +1,9 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
-import { supabase } from './supabaseClient';
+import { supabase } from '../supabaseClient.js';
 import { useTranslation } from "react-i18next";
 
 // 1. Tạo Context
-const UserContext = createContext(null);
+const AuthContext = createContext(null);
 
 // =========================================================
 // HÀM HELPER ĐỘC LẬP (Không phụ thuộc vào Provider state)
@@ -34,7 +34,7 @@ const fetchUserProfileAndRole = async (id) => {
 
 
 // 2. Tạo Provider Component
-export const UserProvider = ({ children }) => {
+export const AuthProvider = ({ children }) => {
     const [userId, setUserId] = useState(null);
     const [userRole, setUserRole] = useState('loading');
     const [username, setUsername] = useState('');
@@ -128,7 +128,7 @@ export const UserProvider = ({ children }) => {
     };
 
     return (
-        <UserContext.Provider value={{ userInfo, logout }}>
+        <AuthContext.Provider value={{ userInfo, logout }}>
         {/* Chỉ hiển thị children khi đã load xong trạng thái Auth */}
         {isLoading ? (
             <div className='loading-page'>
@@ -144,15 +144,15 @@ export const UserProvider = ({ children }) => {
                 
             </div>
         ) : children}
-        </UserContext.Provider>
+        </AuthContext.Provider>
     );
 };
 
 // 3. Tạo Custom Hook để sử dụng Context dễ dàng hơn
-export const useUser = () => {
-  const context = useContext(UserContext);
+export const useAuth = () => {
+  const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error('useUser must be used within a UserProvider');
+    throw new Error('useAuth must be used within a AuthProvider');
   }
   return context;
 };
