@@ -36,7 +36,11 @@
         "reset_password_success": "Đặt lại mật khẩu thành công! Đang chuyển hướng...",
         "reset_link_invalid": "Link không hợp lệ",
         "reset_link_invalid_desc": "Link đã hết hạn hoặc không đúng. Vui lòng thử lại.",
-        "update_password": "Cập nhật mật khẩu"
+        "update_password": "Cập nhật mật khẩu",
+        "email_invalid": "Email không hợp lệ",
+        "email_required": "Vui lòng điền Email",
+        "password_required": "Cần nhập mật khẩu",
+        "password_min": "Mật khẩu tối thiểu 6 chữ cái"
     },
     "admin": {
 

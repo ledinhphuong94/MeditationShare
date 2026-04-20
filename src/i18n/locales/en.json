@@ -36,7 +36,11 @@
         "reset_password_success": "Password reset successful! Redirecting...",
         "reset_link_invalid": "Invalid link",
         "reset_link_invalid_desc": "The link has expired or is incorrect. Please try again.",
-        "update_password": "Update password"
+        "update_password": "Update password",
+        "email_invalid": "Email invalid",
+        "email_required": "Email required",
+        "password_required": "Password required",
+        "password_min": "Password at least 6 letters"
     },
     "admin": {
 
