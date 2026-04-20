@@ -1,8 +1,8 @@
 import './MarkupCardList.css'
-import React, { useEffect, useRef, useLayoutEffect } from "react";
+import React from "react";
 import { BiMessageSquareEdit } from "react-icons/bi";
 import { MdDeleteForever } from "react-icons/md";
-import { Card, Button, Tooltip, Popconfirm, Empty, Tag } from 'antd'; // Ant Design
+import { Card, Button, Tooltip, Popconfirm, Tag } from 'antd'; // Ant Design
 import { useAuth } from '../../context/AuthContext.js';
 import { t } from 'i18next';
 

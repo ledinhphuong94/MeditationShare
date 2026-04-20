@@ -1,6 +1,5 @@
 // components/AdminRoute.js
-import React from 'react';
-import { Navigate, Outlet } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.js';
 import Admin from "../pages/Admin/Admin.jsx";
 

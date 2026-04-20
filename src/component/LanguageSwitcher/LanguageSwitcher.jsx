@@ -2,7 +2,7 @@ import "./LanguageSwitcher.css"
 import { useTranslation } from "react-i18next";
 
 function LanguageSwitcher() {
-  const { i18n, t } = useTranslation();
+  const { i18n } = useTranslation();
 
   const changeLanguage = (e) => {
     const lang = e.target.value;

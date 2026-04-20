@@ -1,17 +1,16 @@
 // App.js (Bố cục mới)
 import './App.css';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { useAuth } from './context/AuthContext.js'; // Sử dụng context
+// import { useAuth } from './context/AuthContext.js'; // Sử dụng context
 import Auth from './pages/Auth/Auth.jsx';
 import Admin from './pages/Admin/Admin.jsx'; // Component Admin bạn sẽ tạo
 import AdminRoute from './routes/Admin.Route.jsx';
 import Dashboard from './pages/Dashboard/Dashboard.jsx';
-import MaintenancePage from "./pages/Maintenance/maintenance.jsx";
 import ResetPassword from './pages/ResetPassword/ResetPassword'
 
 // Component chính chứa Routes
 function AppWrapper() {
-    const { userRole } = useAuth(); // Lấy role để sử dụng trong UI
+    // const { userRole } = useAuth(); // Lấy role để sử dụng trong UI
 
     return (
         <BrowserRouter>

@@ -20,7 +20,7 @@ const calculateLightSize = (zoom) => {
 
 const Mapty = ({ markers, handleClickOnMap, onMarkerClick, mapRef, lang, activeTab = 'candles', onUserMarkerClick, myUserId }) => {
     const [currentZoom, setCurrentZoom] = useState(6);
-    const { users, myLocation } = useUsersContext();
+    const { users } = useUsersContext();
     // 1. Chỉ một chỗ duy nhất lắng nghe sự kiện Map
     function MapEventsHandler() {
         const map = useMapEvents({

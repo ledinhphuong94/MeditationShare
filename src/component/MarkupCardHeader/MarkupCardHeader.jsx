@@ -1,5 +1,5 @@
 import React from 'react';
-import { Typography, Space, Badge, Divider } from 'antd';
+import { Typography, Space, Divider } from 'antd';
 import { useTranslation } from "react-i18next";
 import { FireFilled } from '@ant-design/icons';
 import './MarkupCardHeader.css';
