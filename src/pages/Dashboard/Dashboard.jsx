@@ -295,9 +295,9 @@ function Dashboard() {
                             chatTarget={chatTarget}
                             userInfo={userInfo}
                             onCloseDrawer={onCloseDrawer}
-                            hasMore={hasMoreRef}
+                            hasMoreRef={hasMoreRef}
                             onLoadMore={loadMore}
-                            loadingMore={loadingMoreRef}
+                            loadingMoreRef={loadingMoreRef}
                         />
                     </Drawer>
                 )}

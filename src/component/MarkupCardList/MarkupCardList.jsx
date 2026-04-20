@@ -28,8 +28,8 @@ const MarkupCardList = ({ markers, activeId, mapRef, handleUpdateMess, handleDel
             (entries) => {
                 if (
                     entries[0].isIntersecting &&
-                    !loadingMoreRef.current &&
-                    hasMoreRef.current
+                    !loadingMoreRef?.current &&
+                    hasMoreRef?.current
                 ) {
                     onLoadMoreRef.current();
                 }
@@ -107,7 +107,7 @@ const MarkupCardList = ({ markers, activeId, mapRef, handleUpdateMess, handleDel
                         />
                     );
                 })}
-                {hasMoreRef.current && <div ref={setLoadMoreRef} style={{ height: 20 }} />}
+                {hasMoreRef?.current && <div ref={setLoadMoreRef} style={{ height: 20 }} />}
             {/* </div> */}
         </div>
     );
