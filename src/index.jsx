@@ -3,16 +3,14 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App.jsx';
 import { AuthProvider } from './context/AuthContext.js';
-import { UsersProvider } from './context/UsersContext.js';
 import reportWebVitals from './reportWebVitals.js';
 import "./i18n/index.js";
-import { ConfigProvider } from 'antd'
+import { App as AntdApp, ConfigProvider } from 'antd'
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <AuthProvider>
-      <UsersProvider>
         <ConfigProvider
           theme={{
             token: {
@@ -30,9 +28,10 @@ root.render(
             },
           }}
         >
+          <AntdApp>
           <App />
+          </AntdApp>
         </ConfigProvider>
-      </UsersProvider>  
     </AuthProvider>
   </React.StrictMode>
 );

@@ -1,6 +1,9 @@
 {
     "common": {
-        "loading": "Loading..."
+        "loading": "Loading...",
+        "cancel":"Cancel",
+        "confirm":"Confirm",
+        "delete": "Delete"
     },
     "auth": {
         "login": "Login",
@@ -20,7 +23,20 @@
         "login_now": "Login now",
         "register_new": "Register a new account",
         "password": "Password",
-        "your_name": "Your name"
+        "your_name": "Your name",
+        "forgot_password": "Forgot password?",
+        "forgot_password_desc": "Enter your email address, we will send you a password reset link.",
+        "forgot_email_sent": "Email sent! Please check your inbox.",
+        "send_reset_link": "Send reset link",
+        "reset_password": "Reset password",
+        "new_password": "New password",
+        "confirm_password": "Confirm password",
+        "confirm_password_required": "Please confirm password",
+        "password_not_match": "Password does not match",
+        "reset_password_success": "Password reset successful! Redirecting...",
+        "reset_link_invalid": "Invalid link",
+        "reset_link_invalid_desc": "The link has expired or is incorrect. Please try again.",
+        "update_password": "Update password"
     },
     "admin": {
 
@@ -37,7 +53,9 @@
         "error_update_mess":"Error when updating message",
         "are_you_sure_delete":"Are you sure you want to delete this message?",
         "error_when_remove": "Error when removing candle",
-        "fail_delete_candle": "Fail to delete candle."
+        "fail_delete_candle": "Fail to delete candle.",
+        "delete_success": "Candle deleted successfully.",
+        "new_candle_lit": "A new candle has been lit!"
     },
     "alert": {
         "browser_not_support_location": "Your browser does not support location sharing.",
@@ -53,10 +71,37 @@
         "label_your_mess": "Your message:",
         "place_holder_mess": "(Under 280 characters)",
         "send": "Send",
+        "cancel": "Cancel",
         "not_allow_link_in_name": "Name cannot contain links!",
         "not_allow_link_in_message": "Message cannot contain links!",
         "not_valid_name": "Name is invalid!",
         "not_valid_message": "Message is invalid!",
-        "please_fill_both": "Please fill both Name and Message."
+        "please_fill_both": "Please fill both Name and Message.",
+        "edit_message": "Edit Message",
+        "update": "Update",
+        "enter_your_name": "Enter your name"
+    },
+
+    "userCardList": {
+        "Candle": "Candle",
+        "People": "People",
+        "message": "Message",
+        "location": "Location",
+        "online": "Online",
+        "just_now": "Just now",
+        "minute_ago": "minute(s) ago",
+        "hour_ago": "hour(s) ago",
+        "day_ago": "day(s) ago",
+        "new_message": "new message(s)",
+        "empty_candle": "Empty data"
+    },
+
+    "markupCardList": {
+        "edit": "Edit",
+        "delete": "Delete",
+        "confirm_delete": "Are you sure you want to delete this candle?",
+        "error_delete": "Error when deleting candle.",
+        "fail_delete": "Failed to delete candle.",
+        "cancel": "Cancel"
     }
 }

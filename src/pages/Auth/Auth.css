@@ -54,53 +54,6 @@
     font-size: 24px;
     font-weight: 600;
 }
-
-/* ========================================================= */
-/* 3. INPUTS & BUTTON */
-/* ========================================================= */
-.auth-form form {
-    display: flex;
-    flex-direction: column;
-    gap: 15px; /* Khoảng cách giữa các phần tử form */
-}
-
-.auth-form input {
-    padding: 12px 15px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    font-size: 16px;
-    transition: border-color 0.3s;
-}
-
-.auth-form input:focus {
-    border-color: #4CAF50; /* Màu xanh lá cây khi focus */
-    outline: none;
-    box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
-}
-
-.auth-form button {
-    background-color: #4CAF50; /* Màu xanh lá cây chính */
-    color: white;
-    padding: 12px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 17px;
-    font-weight: 600;
-    transition: background-color 0.3s, opacity 0.3s;
-    margin-top: 10px;
-}
-
-.auth-form button:hover:not(:disabled) {
-    background-color: #45a049;
-}
-
-.auth-form button:disabled {
-    background-color: #a5d6a7; /* Màu nhạt khi disabled */
-    cursor: not-allowed;
-    opacity: 0.8;
-}
-
 /* ========================================================= */
 /* 4. TRANG CHÍNH BUTTON */
 /* ========================================================= */

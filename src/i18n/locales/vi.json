@@ -1,6 +1,9 @@
 {
     "common": {
-        "loading": "Đang tải..."
+        "loading": "Đang tải...",
+        "cancel":"Hủy",
+        "confirm":"Xác nhận",
+         "delete": "Xóa"
     },
     "auth": {
         "login": "Đăng nhập",
@@ -20,7 +23,20 @@
         "login_now": "Đăng nhập ngay",
         "register_new": "Đăng ký mới",
         "password": "Mật khẩu",
-        "your_name": "Tên của bạn"
+        "your_name": "Tên của bạn",
+        "forgot_password": "Quên mật khẩu?",
+        "forgot_password_desc": "Nhập email của bạn, chúng tôi sẽ gửi link đặt lại mật khẩu.",
+        "forgot_email_sent": "Email đã được gửi! Vui lòng kiểm tra hộp thư.",
+        "send_reset_link": "Gửi link đặt lại",
+        "reset_password": "Đặt lại mật khẩu",
+        "new_password": "Mật khẩu mới",
+        "confirm_password": "Xác nhận mật khẩu",
+        "confirm_password_required": "Vui lòng xác nhận mật khẩu",
+        "password_not_match": "Mật khẩu không khớp",
+        "reset_password_success": "Đặt lại mật khẩu thành công! Đang chuyển hướng...",
+        "reset_link_invalid": "Link không hợp lệ",
+        "reset_link_invalid_desc": "Link đã hết hạn hoặc không đúng. Vui lòng thử lại.",
+        "update_password": "Cập nhật mật khẩu"
     },
     "admin": {
 
@@ -37,7 +53,9 @@
         "error_update_mess":"Lỗi khi cập nhật thông điệp",
         "are_you_sure_delete":"Bạn có chắc chắn muốn xóa thông điệp này không?",
         "error_when_remove": "Lỗi khi xóa nến",
-        "fail_delete_candle": "Xóa nến thất bại."
+        "fail_delete_candle": "Xóa nến thất bại.",
+        "delete_success": "Nến đã được xóa thành công.",
+        "new_candle_lit": "Một nến mới đã được thắp lên!"
     },
     "alert": {
         "browser_not_support_location": "Trình duyệt của bạn không hỗ trợ Chia sẽ toạ độ.",
@@ -53,10 +71,36 @@
         "label_your_mess": "Thông điệp của bạn:",
         "place_holder_mess": "(Dưới 280 ký tự)",
         "send": "Gửi",
+        "cancel": "Huỷ",
         "not_allow_link_in_name":"Tên không được phép chứa đường dẫn!",
         "not_allow_link_in_message":"Thông điệp không được chứa đường dẫn!",
         "not_valid_name": "Tên không hợp lệ!",
         "not_valid_message": "Thông điệp không hợp lệ!",
-        "please_fill_both": "Vui lòng nhập cả Tên và Thông điệp."
+        "please_fill_both": "Vui lòng nhập cả Tên và Thông điệp.",
+        "edit_message": "Sửa thông điệp",
+        "update": "Cập nhật",
+        "enter_your_name": "Vui lòng nhập tên"
+    },
+    "userCardList": {
+        "Candle": "Nến",
+        "People": "Cộng đồng",
+        "message": "Thông điệp",
+        "location": "Vị trí",
+        "online": "Trực tuyến",
+        "just_now": "Vừa mới",
+        "minute_ago": "phút trước",
+        "hour_ago": "giờ trước",
+        "day_ago": "ngày trước",
+        "new_message": "tin mới",
+        "empty_candle": "Chưa có tâm nguyện nào"
+    },
+
+    "markupCardList": {
+        "edit": "Chỉnh sửa",
+        "delete": "Xóa",
+        "confirm_delete": "Bạn có chắc chắn muốn xóa nến này không?",
+        "error_delete": "Lỗi khi xóa nến.",
+        "fail_delete": "Failed to delete candle.",
+        "cancel": "Hủy"
     }
 }

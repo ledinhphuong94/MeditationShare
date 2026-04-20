@@ -1,26 +1,58 @@
-.markup-header {
-    font-family: "Playwrite CZ", cursive;
+.markup-header-container {
+    padding: 16px 16px 0 16px;
+    background: linear-gradient(180deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 100%);
     text-align: center;
-    height: 120px;
 }
 
-.markup-title-description {
-    color: rgb(255, 255, 0);
+.markup-title.ant-typography {
+    font-family: "Playwrite CZ", cursive;
+    color: #faad14 !important; /* Màu vàng cam của ngọn nến */
+    margin: 0 !important;
+    font-size: 24px;
+    text-shadow: 0 2px 10px rgba(250, 173, 20, 0.3);
+}
+
+.markup-description.ant-typography {
+    color: #ffffff;
     font-size: 13px;
-    color: white;
-}
-.markup-title {
-  text-align: center; 
-  font-optical-sizing: auto;
-  font-style: normal;
-  color: rgb(255, 255, 0);
-  margin: 15px 0px 0px 0px;
-  font-size: 26px;
+    margin-bottom: 8px !important;
+    opacity: 0.85;
 }
 
-.total-users {
-    color: rgb(200, 200, 200);
-    margin: 10px 10px 5px 0px;
+.total-users-wrapper {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding-bottom: 4px;
+}
+
+.total-users-count.ant-typography {
+    color: #fff;
+    font-weight: 700;
+    font-size: 14px;
+}
+
+.total-users-label.ant-typography {
+    color: #bfbfbf !important;
     font-size: 12px;
-    text-align: right;
+}
+
+/* --- Responsive cho Mobile --- */
+@media (max-width: 576px) {
+    .markup-header-container {
+        padding: 10px 10px 0 10px;
+    }
+
+    .markup-title.ant-typography {
+        font-size: 20px; /* Thu nhỏ tiêu đề trên mobile */
+    }
+
+    .markup-description.ant-typography {
+        font-size: 12px;
+    }
+
+    .total-users-wrapper {
+        justify-content: center; /* Ra giữa trên mobile để dễ nhìn */
+        margin-top: 5px;
+    }
 }

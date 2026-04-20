@@ -22,11 +22,12 @@ export const getAvatarColor = (name = '') => {
         '#e85d04', '#f48c06', '#2d6a4f', '#1d3557',
         '#6a0572', '#0077b6', '#c1121f', '#386641',
     ]
-    const index = name.charCodeAt(0) % colors.length
-    return colors[index]
+    let hash = 0;
+    for (let i = 0; i < name.length; i++) hash = name.charCodeAt(i) + ((hash << 5) - hash);
+    return colors[Math.abs(hash) % colors.length];
 }
 
-export const createUserIcon = (user) => {
+export const createUserIcon = (user, size = 32) => {
     const initials = getInitials(user.name)
     const bgColor = getAvatarColor(user.name)
     const online = isOnline(user.last_seen)
@@ -40,8 +41,8 @@ export const createUserIcon = (user) => {
         className: '',
         html: `
             <div style="
-                width: 40px;
-                height: 40px;
+                width: ${size}px; 
+                height: ${size}px;
                 border-radius: 50%;
                 background: ${bgColor};
                 border: 2.5px solid ${borderColor};
@@ -50,7 +51,7 @@ export const createUserIcon = (user) => {
                 align-items: center;
                 justify-content: center;
                 color: #fff;
-                font-size: 13px;
+                font-size: ${size * 0.4}px;
                 font-weight: 700;
                 font-family: 'DM Mono', monospace;
                 letter-spacing: 1px;
@@ -60,8 +61,8 @@ export const createUserIcon = (user) => {
                 ${initials}
             </div>
         `,
-        iconSize: [40, 40],
-        iconAnchor: [20, 20],
-        popupAnchor: [0, -24],
+        iconSize: [size, size],
+        iconAnchor: [size / 2, size / 2],
+        popupAnchor: [0, -size / 2],
     })
 }

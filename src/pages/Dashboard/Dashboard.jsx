@@ -1,39 +1,24 @@
 import './Dashboard.css'
 import { useEffect, useState, useRef, useCallback } from "react";
+import { Layout, App, Drawer } from "antd";
 import { supabase } from "../../supabaseClient.js";
-import MessageModal from '../../component/MessageModal/MessageModal.js';
+import MessageModal from '../../component/MessageModal/MessageModal.jsx';
 import Mapty from '../../component/Mapty/Mapty.jsx';
-import MarkupCardHeader from '../../component/MarkupCardHeader/MarkupCardHeader.js';
-import MarkupCardList from '../../component/MarkupCardList/MarkupCardList.js';
-// import logoImg from "./img/logo.png";
 import bellSound from "../../sound/bell2.mp3";
 import { useAuth } from '../../context/AuthContext.js';
-import { useUsersContext } from '../../context/UsersContext.js';
-import AuthButtons from "../../component/AuthButton/AuthButtons.jsx";
-import LanguageSwitcher from "../../component/LanguageSwitcher/LanguageSwitcher.jsx";
 import { useTranslation } from "react-i18next";
-import TabsSwitcher from '../../component/TabsSwitcher/TabsSwitcher.jsx';
-import UserCardList from '../../component/UserCardList/UserCardList.jsx';
-import ChatDrawer from '../../component/ChatDrawer/ChatDrawer.jsx';
+import { UsersProvider } from '../../context/UsersContext.js';
+import SidebarContent from "../../component/SidebarContent/SidebarContent";
+import bg from "../../img/sunrise.jpg";
 
-const playAudio = (audio) => {
-  try {
-      audio.play().catch(err => {
-          if (err.name === 'NotAllowedError') {
-              console.warn('Âm thanh bị chặn. Cần tương tác người dùng.');
-          } else {
-              console.error('Lỗi phát âm thanh khác:', err);
-          }
-      });
-  } catch (err) {
-      console.error('Lỗi sync khi gọi audio.play:', err);
-  }
-}
+const { Content, Sider } = Layout;
 function Dashboard() {
     const { t, i18n } = useTranslation();
+    const tRef = useRef(t);
+    tRef.current = t;
+    const { message, modal, notification } = App.useApp(); // Antd Static Functions
     const [markers, setMarkers] = useState([]);
     const [isOpenModal, setIsOpenModal] = useState(false);
-    const [currPos, setCurrPos] = useState([null, null]);
     const [activeId, setActiveId] = useState(null);
     const [isEffectActive, setIsEffectActive] = useState(false);
     const [formData, setFormData] = useState(null);
@@ -42,255 +27,289 @@ function Dashboard() {
     const { userRole, userId } = userInfo;
     const [totalUsers, setTotalUsers] = useState(0);
     const [activeTab, setActiveTab] = useState('candles');
-    const { users, myLocation } = useUsersContext();
     const [activeUserId, setActiveUserId] = useState(null);
     const [chatTarget, setChatTarget] = useState(null)
-   
-    const handleGlowingEffect = () => {
-            if (isEffectActive) {
-                setIsEffectActive(false);
-            }
-            setTimeout(() => {
-                setIsEffectActive(true);
-                setTimeout(() => {
-                    setIsEffectActive(false);
-                }, 4000);
-            }, 10);
-    };
+    const audioRef = useRef(new Audio(bellSound));
+    const getIsMobile = () => window.innerWidth < 768;
+    const [isMobile, setIsMobile] = useState(getIsMobile);
+    const [openDrawer, setOpenDrawer] = useState(true);
+    const currPosRef = useRef([null, null]);
 
-    const getTotalUsers = async () => {
-        const { data, error } = await supabase.rpc('count_unique_users');
-        
-        if (error) {
-            console.error('Lỗi khi thống kê users:', error);
-        } else {
-            const uniqueUserCount = data; // Supabase có thể trả về giá trị trực tiếp
-            setTotalUsers(uniqueUserCount);
+    // ============== load more cards on scroll  ==============
+    const loadingMoreRef = useRef(false);
+    const hasMoreRef = useRef(true);
+    const pageRef = useRef(0);
+
+    const PAGE_SIZE = 75;
+    const fetchMarkers = useCallback( async (pageIndex = 0) => {
+        const from = pageIndex * PAGE_SIZE;
+        const to = from + PAGE_SIZE - 1;
+
+        const { data, count, error } = await supabase
+            .from("markers")
+            .select("*", { count: "exact", head: false })
+            .order("updated_at", { ascending: false })
+            .range(from, to);
+        if (error) return;
+
+        const totalLoaded = from + data.length;
+        if (totalLoaded >= count) {
+            // setHasMore(false);
+            hasMoreRef.current = false
         }
-    }
-
-   // ============================
-  // 2. Load markers ban đầu
-  // ============================
-    useEffect(() => {
-        const loadMarkers = async () => {
-            let { data } = await supabase.from("markers")
-            .select("*")
-            .order('updated_at', { ascending: false })
-            // .order('created_at', { ascending: false })
-            .limit(100);
-            setMarkers(data || []);
-        };
-        // Load markers
-        loadMarkers();
-
-        // Get total user
-        getTotalUsers();
+        setMarkers((prev) =>
+            pageIndex === 0 ? data : [...prev, ...data]
+        );
     }, []);
 
+    const loadMore = useCallback(async () => {
+        if (loadingMoreRef.current || !hasMoreRef.current) return;
+
+        loadingMoreRef.current = true;
+
+        const nextPage = pageRef.current + 1;
+        pageRef.current = nextPage;
+
+        await fetchMarkers(nextPage);
+
+        loadingMoreRef.current = false;
+    }, [fetchMarkers]);
+
     // ============================
-    // 3. Realtime markers
-    // ============================
+    //switch tab when logout
     useEffect(() => {
-        const audio = new Audio(bellSound);
-        const channel = supabase
-        .channel("realtime-markers")
-        .on( // Add
-            "postgres_changes",
-            { event: "INSERT", schema: "public", table: "markers" },
-            (payload) => {
-                handleGlowingEffect();
-                setMarkers((prev) => [payload.new, ...prev]);
-                setActiveId(payload.new.id);
-                getTotalUsers();
-                playAudio(audio);
-            }
-        )
-        .on( // Update 
-            "postgres_changes",
-            { event: "UPDATE", schema: "public", table: "markers" },
-            (payload) => {
-                // Xử lý cập nhật: tìm và thay thế marker cũ bằng payload.new
-                handleGlowingEffect();
-                setMarkers((prev) => [payload.new, ...prev.filter((i) => i.id !== payload.old.id)]);
-                setActiveId(payload.new.id);
-                playAudio(audio);
-            }
-        )
-        .on( //delete
-            'postgres_changes',
-            { event: 'DELETE', schema: 'public', table: 'markers' },
-            (payload) => {
-                console.log('Marker đã bị xóa:', payload);
-            // Xử lý cập nhật: tìm và thay thế marker cũ bằng payload.new
-                setMarkers((prev) => [...prev.filter((i) => i.id !== payload.old.id)]);
-                getTotalUsers();
-            }
-        )
-        .subscribe();
+        if (userRole === 'anon') {
+            setActiveTab('candles');
+        }
+    }, [userRole]);
+
+    // Detect mobile
+    useEffect(() => {
+        const handler = () => setIsMobile(window.innerWidth < 768);
+        window.addEventListener("resize", handler);
+        return () => window.removeEventListener("resize", handler);
+    }, []);
+   
+    // Hiệu ứng hào quang khi có nến mới
+    const handleGlowingEffect = useCallback(() => {
+        setIsEffectActive(true);
+        setTimeout(() => setIsEffectActive(false), 4000);
+    }, []);
+
+   // Thống kê users
+    const fetchStats = useCallback(async () => {
+        const { data, error } = await supabase.rpc('count_unique_users');
+        if (!error) setTotalUsers(data);
+    }, []);
+
+    // Load markers ban đầu
+    useEffect(() => {
+        const loadData = async () => {
+            await fetchMarkers(0);
+            // setMarkers(data || []);
+            fetchStats();
+        };
+        loadData();
+    }, [fetchStats]);
+
+    // Realtime logic
+    useEffect(() => {
+        const channel = supabase.channel("realtime-dashboard")
+            .on("postgres_changes", { event: "*", schema: "public", table: "markers" }, (payload) => {
+                const isMe = payload.new.user_id === userId;
+                // setIsMyInsert(isMe);
+                if (payload.eventType === "INSERT") {
+                    setMarkers((prev) => [payload.new, ...prev]);
+                    // setActiveId(payload.new.id);
+                    handleGlowingEffect();
+                    audioRef.current.currentTime = 0;
+                    audioRef.current.play().catch(() => {}); // Silent catch for autoplay block
+                    fetchStats();
+                    notification.success({ message: t("dashboard.new_candle_lit") });
+                } 
+                else if (payload.eventType === "UPDATE") {
+                    setMarkers((prev) => prev.map((i) => i.id === payload.new.id ? payload.new : i));
+                    handleGlowingEffect();
+                    audioRef.current.currentTime = 0;
+                    audioRef.current.play().catch(() => {}); //
+                } 
+                else if (payload.eventType === "DELETE") {
+                    setMarkers((prev) => [...prev.filter((i) => i.id !== payload.old.id)]);
+                    fetchStats();
+                }
+            })
+            .subscribe();
 
         return () => supabase.removeChannel(channel);
+    }, [handleGlowingEffect, fetchStats, notification]);
+
+    // Handlers
+    const handleClickOnMap = useCallback((pos) => {
+        // setCurrPos(pos);
+        currPosRef.current = pos;
+        setIsOpenModal(true);
     }, []);
 
-    useEffect(() => {
-        if (!userId || userRole === 'anon') {
-            setActiveTab('candles')
-        }
-    }, [userId, userRole])
+    const handleUpdateMess = useCallback((item) => {
+        setFormData({
+            id: item.id,
+            message: item.message,
+            name: item.name
+        });
+        setIsOpenModal(true);
+    }, []);
+
+    const handleDeleteMess = useCallback(async (item) => {
+        modal.confirm({
+            title: t("dashboard.are_you_sure_delete"),
+            okText: t("common.delete"),
+            okType: 'danger',
+            cancelText: t("common.cancel"),
+            onOk: async () => {
+                const { error } = await supabase.rpc('delete_marker_by_id', { marker_id_to_delete: item.id });
+                if (error) message.error(t("dashboard.error_when_remove"));
+                else message.success(t("dashboard.delete_success"));
+            }
+        });
+    }, [modal, t, message]);
 
     const handleCloseModal = useCallback(() => {
         setIsOpenModal(false);
         setFormData(null);
-    }, [setIsOpenModal, setFormData]);
+    }, []);
 
-    async function handleSubmitModal(data) {
-        const {name, message, isEdited, messId} = data;
-        window.localStorage.setItem('meditation_user_name', name);
-        
+    const onCloseDrawer = useCallback((item) => {
+        if (isMobile) {
+            setOpenDrawer(false);
+        }
+    }, [isMobile]);
+
+    const handleSubmitModal = async (data) => {
+        const { name, message: msg, isEdited, messId } = data;
+        localStorage.setItem('meditation_user_name', name);
+
         if (!isEdited) {
-        const { data, error } = await supabase.from("markers").insert([
-            {
-            user_id: userId,
-            name,
-            message,
-            lat: currPos[0],
-            lng: currPos[1],
-            },
-        ]);
-        if (error) {
-            alert(t("dashboard.error_send_mess"))
-        }
-
+            const { error } = await supabase.from("markers").insert([{
+                user_id: userId, name, message: msg, lat: currPosRef.current[0], lng: currPosRef.current[1]
+            }]);
+            if (error) message.error(t("dashboard.error_send_mess"));
         } else {
-            const { data, error } = await supabase.from('markers') 
-            .update({ 
-                message: message,
-                updated_at: new Date().toISOString(),
-                isEdited: true,
-            })
-            .eq('id', messId) // Điều kiện 1: ID của tin nhắn cụ thể
-            .eq('user_id', userId)
-
-        if (error) {
-            alert(t("dashboard.error_update_mess"))
+            const { error } = await supabase.from('markers')
+                .update({ message: msg, updated_at: new Date().toISOString(), isEdited: true })
+                .eq('id', messId).eq('user_id', userId);
+            if (error) message.error(t("dashboard.error_update_mess"));
         }
-        }
-    }
-
-    function handleClickOnMap(pos) {
-        setIsOpenModal(true);
-        setCurrPos(pos);
-    }
-
-    function handleUpdateMess(item) {
-        setFormData({id: item.id, message: item.message, name: item.name});
-        setIsOpenModal(true);
+        handleCloseModal();
     };
 
-    async function handleDeleteMess(item) {
-        const isConfirmed = window.confirm(t("dashboard.are_you_sure_delete"));
-        if (!isConfirmed) return;
-        try {
-            // Gọi hàm RPC đã tạo
-            const { error } = await supabase.rpc('delete_marker_by_id', {
-                marker_id_to_delete: item.id 
-            });
+    return <UsersProvider>
+        <Layout className="app-container">
+            <div className={isEffectActive ? "glowing-effect" : ""}></div>
 
-            if (error) {
-                // Lỗi sẽ bao gồm cả lỗi "Permission denied" từ SQL Function
-                alert(`${t("dashboard.error_when_remove")}: ${error.message}`);
-                console.error('Lỗi khi gọi RPC xóa marker:', error);
-                return;
-            }
+                <Content style={{ position: "relative", height: "100%" }}>
+                    <Mapty
+                        markers={markers}
+                        handleClickOnMap={handleClickOnMap}
+                        onMarkerClick={setActiveId}
+                        mapRef={mapRef}
+                        lang={i18n.language}
+                        activeTab={activeTab}
+                        onUserMarkerClick={setActiveUserId}
+                        myUserId={userId}
+                    />
 
-            // Nếu thành công, sự kiện xóa sẽ được Realtime lắng nghe và cập nhật giao diện (Bước 3)
-            alert(`Nến ID ${item.id} đã được xóa thành công.`);
+                    <div className="map-footer">
+                        © 2026 {t("dashboard.light_map")} | v2.0
+                    </div>
 
-        } catch (e) {
-            console.error("Lỗi mạng hoặc lỗi không xác định:", e);
-            alert(t("dashboard.fail_delete_candle"));
-        }
-    };
+                    {/* 👉 BUTTON mở drawer (mobile) */}
+                    {isMobile && (
+                        <button
+                            className="open-drawer-btn"
+                            onClick={() => setOpenDrawer(true)}
+                        >
+                            ☰
+                        </button>
+                    )}
+                </Content>
+                
+                {/* ✅ DESKTOP */}
+                {!isMobile && (
+                    <Sider width={350} className="sidebar">
+                        <SidebarContent
+                            userRole={userRole}
+                            activeTab={activeTab}
+                            setActiveTab={setActiveTab}
+                            totalUsers={totalUsers}
+                            markers={markers}
+                            activeId={activeId}
+                            mapRef={mapRef}
+                            handleUpdateMess={handleUpdateMess}
+                            handleDeleteMess={handleDeleteMess}
+                            userId={userId}
+                            activeUserId={activeUserId}
+                            setChatTarget={setChatTarget}
+                            chatTarget={chatTarget}
+                            userInfo={userInfo}
+                            hasMoreRef={hasMoreRef}
+                            onLoadMore={loadMore}
+                            loadingMoreRef={loadingMoreRef}
+                        />
+                    </Sider>
+                )}
 
-    return (
-        <>
-            <div className={isEffectActive ? 'glowing-effect' : ''}></div>
-
-            <div className="container">
+                {/* ✅ MOBILE */}
+                {isMobile && (
+                    <Drawer
+                        placement="bottom"   // 🔥 QUAN TRỌNG
+                        height="80%"         // giống app thật
+                        open={openDrawer}
+                        onClose={() => setOpenDrawer(false)}
+                        bodyStyle={{ padding: 0 }}
+                        styles={{
+                                body: {
+                                position: "relative",
+                                // backgroundImage: `url(${bg})`,
+                                background: `
+                                    linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.7)),
+                                    url(${bg})
+                                `,
+                                backgroundSize: "cover",
+                                backgroundPosition: "center",
+                            },
+                        }}
+                    >
+                        <SidebarContent
+                            userRole={userRole}
+                            activeTab={activeTab}
+                            setActiveTab={setActiveTab}
+                            totalUsers={totalUsers}
+                            markers={markers}
+                            activeId={activeId}
+                            mapRef={mapRef}
+                            handleUpdateMess={handleUpdateMess}
+                            handleDeleteMess={handleDeleteMess}
+                            userId={userId}
+                            activeUserId={activeUserId}
+                            setChatTarget={setChatTarget}
+                            chatTarget={chatTarget}
+                            userInfo={userInfo}
+                            onCloseDrawer={onCloseDrawer}
+                            hasMore={hasMoreRef}
+                            onLoadMore={loadMore}
+                            loadingMore={loadingMoreRef}
+                        />
+                    </Drawer>
+                )}
+        
             <MessageModal
                 formData={formData}
                 isOpen={isOpenModal}
                 onClose={handleCloseModal}
                 onSubmit={handleSubmitModal}
             />
-
-            <div className="container-left">
-                <Mapty
-                    markers={markers} 
-                    handleClickOnMap={handleClickOnMap}
-                    onMarkerClick={(id) => setActiveId(id)} 
-                    mapRef={mapRef}
-                    lang={i18n.language}
-                    activeTab={activeTab}  
-                    users={users}
-                    onUserMarkerClick={(userId) => setActiveUserId(userId)}
-                    myUserId={userId}
-                />
-                
-                <div className='logo'>
-                {/* <img alt='' src={logoImg}/> */}
-                © 2025 {t("dashboard.light_map")} | {t("dashboard.version")} 1.3
-                </div>
-                <div className='logo-hidder'></div>
-            </div>
-
-            <div className="container-right">
-                <div className='right-top-header'>
-                    <AuthButtons />
-                    <LanguageSwitcher />
-                </div>
-
-                <TabsSwitcher
-                    myUserRole={userRole}
-                    activeTab={activeTab}
-                    onChange={(tab) => setActiveTab(tab)}
-                />
-                
-                {activeTab === 'candles' ? (
-                    <>
-                        <MarkupCardHeader totalUsers={totalUsers} />
-                        <MarkupCardList
-                            markers={markers}
-                            activeId={activeId}
-                            mapRef={mapRef}
-                            handleUpdateMess={handleUpdateMess}
-                            handleDeleteMess={handleDeleteMess}
-                        />
-                    </>
-                ) : (
-                    <>
-                        <UserCardList
-                            myUserId={userId}
-                            users={users}
-                            mapRef={mapRef}
-                            activeUserId={activeUserId} 
-                            onSendMessage={(user) => setChatTarget(user)}
-                        />
-
-                        <ChatDrawer
-                            open={!!chatTarget}
-                            onClose={() => setChatTarget(null)}
-                            currentUser={{ id: userInfo.userId }}
-                            targetUser={chatTarget}
-                        />
-                    </>
-                )}
-            </div>
-
-            </div>
-        </>
-
-  );
+        </Layout>
+    </UsersProvider>
 }
 
 export default Dashboard;

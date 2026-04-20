@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useMap } from 'react-leaflet'; 
-import * as L from 'leaflet';
+import { useMap } from 'react-leaflet';
 
 // 1. Import MaptilerLayer từ SDK đã cài đặt
 import { MaptilerLayer } from "@maptiler/leaflet-maptilersdk";

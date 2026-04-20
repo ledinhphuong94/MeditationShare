@@ -5,8 +5,9 @@ import { useAuth } from './context/AuthContext.js'; // Sử dụng context
 import Auth from './pages/Auth/Auth.jsx';
 import Admin from './pages/Admin/Admin.jsx'; // Component Admin bạn sẽ tạo
 import AdminRoute from './routes/Admin.Route.jsx';
-import Dashboard from './pages/Dashboard/Dashboard.jsx'; // Component chứa Mapty, MarkupCardList, v.v.
+import Dashboard from './pages/Dashboard/Dashboard.jsx';
 import MaintenancePage from "./pages/Maintenance/maintenance.jsx";
+import ResetPassword from './pages/ResetPassword/ResetPassword'
 
 // Component chính chứa Routes
 function AppWrapper() {
@@ -18,6 +19,7 @@ function AppWrapper() {
                 <Route path="/" element={<Dashboard />} /> 
                 <Route path="/login" element={<Auth type="login" />} />
                 <Route path="/register" element={<Auth type="register" />} />
+                <Route path="/reset-password" element={<ResetPassword />} />
                 <Route element={<AdminRoute />}>
                     <Route path="/admin" element={<Admin />} />
                 </Route>

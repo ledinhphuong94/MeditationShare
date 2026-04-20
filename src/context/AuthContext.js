@@ -71,7 +71,7 @@ export const AuthProvider = ({ children }) => {
             
             if (session && session.user) {
                 const currentUserId = session.user.id;
-                console.log('session', session)
+                // console.log('session', session)
                 localStorage.setItem('meditation_anonymous_user_id', currentUserId);
                 // Người dùng đã xác thực (bao gồm cả đăng nhập ẩn danh ban đầu)
                 if (session.user.is_anonymous) {
@@ -79,7 +79,7 @@ export const AuthProvider = ({ children }) => {
                 } else {
                     // Người dùng đã đăng ký
                     const profileRole = await fetchUserProfileAndRole(currentUserId);
-                    console.log('profileData', profileRole);
+                    // console.log('profileData', profileRole);
                     setAuthState(currentUserId, profileRole, session.user.user_metadata?.name);
                 }
 

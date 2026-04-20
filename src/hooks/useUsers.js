@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from 'react';
 import { supabase } from '../supabaseClient';
 import { useAuth } from '../context/AuthContext.js';
 import { useTranslation } from "react-i18next";
+import isEqual from "lodash/isEqual";
 
 export const useUsers = () => {
     const [users, setUsers] = useState([]);
@@ -13,10 +14,11 @@ export const useUsers = () => {
     const lastUpdateRef = useRef(0);
     const lastFetchRef = useRef(0);
     const lastLocationRef = useRef(null);
+    const usersRef = useRef([]);
 
     const MIN_DISTANCE = 10; // mét
-    const UPDATE_INTERVAL = 10000; // ms
-    const FETCH_INTERVAL = 10000; // ms
+    const UPDATE_INTERVAL = 60000; // ms
+    const FETCH_INTERVAL = 40000; // ms
     const LAST_SEEN_INTERVAL = 10000; // ms
 
     const getDistance = (lat1, lng1, lat2, lng2) => {
@@ -36,7 +38,7 @@ export const useUsers = () => {
     // ✅ UPDATE LOCATION (throttle)
     const updateLocation = async (lat, lng) => {
         setMyLocation({ lat, lng });
-        console.log({userRole, userId})
+        // console.log('-> Update location')
         if (!userId || userRole === 'anon') return;
 
         const now = Date.now();
@@ -44,7 +46,7 @@ export const useUsers = () => {
 
         lastUpdateRef.current = now;
 
-        console.log('userRole', userRole)
+        // console.log('userRole', userRole)
         const { error } = await supabase.from("user_locations").upsert({
             user_id: userId,
             location: `POINT(${lng} ${lat})`,
@@ -59,6 +61,7 @@ export const useUsers = () => {
         if (!lat || !lng) return;
 
         const now = Date.now();
+        // console.log('now - lastFetchRef.current', now - lastFetchRef.current)
         if (now - lastFetchRef.current < FETCH_INTERVAL) return;
 
         lastFetchRef.current = now;
@@ -74,7 +77,12 @@ export const useUsers = () => {
             return;
         }
 
-        setUsers(data || []);
+        // 🔥 CHỈ update khi data THẬT SỰ đổi
+        if (!isEqual(usersRef.current, data)) {
+            usersRef.current = data;
+            setUsers(data || []);
+        }
+
     };
 
     // ✅ WATCH GPS (chỉ update location)
@@ -88,16 +96,16 @@ export const useUsers = () => {
         }
 
         // 👇 THÊM: lấy vị trí ngay lập tức
-        navigator.geolocation.getCurrentPosition(
-            (pos) => {
-                const { latitude, longitude } = pos.coords
-                lastLocationRef.current = { lat: latitude, lng: longitude }
-                updateLocation(latitude, longitude)
-                fetchNearbySmart(latitude, longitude)
-            },
-            () => {}, // watchPosition sẽ handle lỗi
-            { enableHighAccuracy: false, timeout: 5000 }
-        );
+        // navigator.geolocation.getCurrentPosition(
+        //     (pos) => {
+        //         const { latitude, longitude } = pos.coords
+        //         lastLocationRef.current = { lat: latitude, lng: longitude }
+        //         updateLocation(latitude, longitude)
+        //         fetchNearbySmart(latitude, longitude)
+        //     },
+        //     () => {}, // watchPosition sẽ handle lỗi
+        //     { enableHighAccuracy: false, timeout: 5000 }
+        // );
 
         const watchId = navigator.geolocation.watchPosition(
             (pos) => {
@@ -117,6 +125,7 @@ export const useUsers = () => {
                 fetchNearbySmart(latitude, longitude);
             },
             (err) => {
+                console.log(err)
                 // 2. Handle các mã lỗi cụ thể từ Geolocation API
                 let errorMessage = "";
                 switch (err.code) {
@@ -153,8 +162,8 @@ export const useUsers = () => {
 
         const intervalId = setInterval(async () => {
             if (!lastLocationRef.current) return;
-            console.log("Updating last_seen...", userId);
-            console.log('userRole KEEP ALIVE', userRole)
+            // console.log("Updating last_seen...", userId);
+            // console.log('userRole KEEP ALIVE', userRole)
             const { data, error } = await supabase
                 .from("user_locations")
                 .update({ last_seen: new Date().toISOString() })
@@ -185,9 +194,10 @@ export const useUsers = () => {
             },
             (payload) => {
                 // refetch nearby khi có thay đổi
-                console.log('userRole', userRole)
-                console.log("refetching nearby...", myLocation);
+                // console.log('userRole', userRole)
+               
                 const loc = lastLocationRef.current
+                // console.log("refetching nearby...", loc);
                 if (loc) {
                     fetchNearbySmart(loc.lat, loc.lng);
                 }

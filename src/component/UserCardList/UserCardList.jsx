@@ -3,8 +3,10 @@ import { Avatar, Badge, List, Typography, Button } from 'antd'
 import { MessageOutlined, EnvironmentOutlined, WifiOutlined } from '@ant-design/icons'
 import { isOnline, getInitials, getAvatarColor } from '../../utils/common.js';
 import { supabase } from '../../supabaseClient';
-
+import { useTranslation } from "react-i18next";
+import { useUsersContext } from '../../context/UsersContext.js';
 const { Text } = Typography
+
 
 const formatDistance = (distance) => {
     if (distance == null) return ''
@@ -13,19 +15,20 @@ const formatDistance = (distance) => {
     return `${(distance / 1000).toFixed(1)} km`
 }
 
-const formatLastSeen = (last_seen) => {
+const formatLastSeen = (t, last_seen) => {
     if (!last_seen) return ''
     const diff = Math.floor((Date.now() - new Date(last_seen).getTime()) / 1000)
-    if (diff < 60) return 'vừa xong'
-    if (diff < 3600) return `${Math.floor(diff / 60)} phút trước`
-    if (diff < 86400) return `${Math.floor(diff / 3600)} giờ trước`
-    return `${Math.floor(diff / 86400)} ngày trước`
+    if (diff < 60) return t('userCardList.just_now')
+    if (diff < 3600) return `${Math.floor(diff / 60)} ${t('userCardList.minute_ago')}`
+    if (diff < 86400) return `${Math.floor(diff / 3600)} ${t('userCardList.hour_ago')}`
+    return `${Math.floor(diff / 86400)} ${t('userCardList.day_ago')}`
 }
 
-const UserCardList = ({ users = [], mapRef, myUserId, activeUserId, onSendMessage }) => {
+const UserCardList = ({ mapRef, myUserId, activeUserId, onSendMessage }) => {
     const itemRefs = useRef({})
-    const [unreadMap, setUnreadMap] = useState({})
-
+    const [unreadMap, setUnreadMap] = useState({});
+    const { t } = useTranslation();
+    const { users, myLocation } = useUsersContext();
     // ── Unread: fetch + realtime ───────────────────────────────
     useEffect(() => {
         if (!myUserId) return
@@ -223,14 +226,14 @@ const UserCardList = ({ users = [], mapRef, myUserId, activeUserId, onSendMessag
                                             <Text style={{
                                                 color: '#4ade80', fontSize: 11,
                                                 fontFamily: "'DM Mono', monospace",
-                                            }}>online</Text>
+                                            }}>{t('userCardList.online')}</Text>
                                         </div>
                                     ) : (
                                         <Text style={{
                                             color: '#b6b6b6', fontSize: 11,
                                             fontFamily: "'DM Mono', monospace",
                                         }}>
-                                            {formatLastSeen(user.last_seen)}
+                                            {formatLastSeen(t, user.last_seen)}
                                         </Text>
                                     )}
 
@@ -241,7 +244,7 @@ const UserCardList = ({ users = [], mapRef, myUserId, activeUserId, onSendMessag
                                             fontWeight: 600,
                                             animation: 'pulse 1.5s ease infinite',
                                         }}>
-                                            {unread} tin mới
+                                            {unread} {t('userCardList.new_message')}
                                         </Text>
                                     )}
                                 </div>

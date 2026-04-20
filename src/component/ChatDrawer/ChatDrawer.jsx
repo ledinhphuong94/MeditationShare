@@ -5,6 +5,8 @@ import Picker from '@emoji-mart/react'
 import data from '@emoji-mart/data'
 import { useChat } from '../../hooks/useChat'
 import { getInitials, getAvatarColor } from '../../utils/common'
+import * as prohibitWord from "../../utils/prohibitMessage.js";
+import { useTranslation } from "react-i18next";
 
 const ChatDrawer = ({ open, onClose, currentUser, targetUser }) => {
     const [input, setInput] = useState('')
@@ -12,6 +14,7 @@ const ChatDrawer = ({ open, onClose, currentUser, targetUser }) => {
     const bottomRef = useRef(null)
     const pickerRef = useRef(null)
     const inputRef = useRef(null)
+    const { t } = useTranslation();
 
     const { messages, loading, sendMessage } = useChat(
         currentUser?.id,
@@ -62,7 +65,12 @@ const ChatDrawer = ({ open, onClose, currentUser, targetUser }) => {
     }
 
     const handleSend = async () => {
-        if (!input.trim()) return
+        if (!input.trim()) return;
+        // Kiểm tra nội dung có chứa từ cấm không?
+        if (prohibitWord.containsForbiddenContent(input.trim()) || prohibitWord.containsProfanity(input.trim())) {
+            alert(t("messageModal.not_valid_message"));
+            return;
+        };
         await sendMessage(input)
         setInput('')
         setShowPicker(false)

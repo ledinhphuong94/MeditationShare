@@ -1,121 +1,111 @@
-/* --- Các class cũ được giữ nguyên --- */
-
-.card-highlight {
-  animation: highlightFlash 2s ease-out;
-  background-color: #fff6b0 !important;
-}
-
-@keyframes highlightFlash {
-  0% { background-color: #ffe27a; }
-  100% { background-color: white; }
-}
-
+/* --- Container chính cho danh sách --- */
 .list-markups {
-    /* Giữ nguyên chiều cao và overflow cho danh sách cuộn */
-    height: calc(100% - 175px);
+    /* Trừ đi chiều cao của header/tabs nếu có */
+    height: calc(100% - 150px);
     overflow-y: auto;
+    /* Hiệu ứng cuộn mượt mà */
+    scroll-behavior: smooth; 
+    padding: 10px;
 }
 
 .list-markups-container {
     display: flex;
     flex-direction: column;
     gap: 12px;
-    padding: 10px;
-    transition: all 1s;
+    padding: 12px;
 }
 
-/* --- Cập nhật .card để giới hạn chiều rộng --- */
-.card {
+/* --- Tùy chỉnh Card của Ant Design --- */
+.markup-card {
     background: #ffffff;
-    border-radius: 10px;
-    padding: 10px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-    border: 1px solid #e5e5e5;
+    border-radius: 10px !important; /* Ghi đè bo góc mặc định của antd */
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    border: 1px solid #f0f0f0 !important;
     cursor: pointer;
-    transition: transform 0.18s ease, box-shadow 0.25s ease;
-    /* max-width: 300px; - Đã có trong style inline, có thể bỏ qua */
-    word-wrap: break-word; /* Cho phép từ quá dài tự động ngắt xuống */
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
+    overflow: hidden;
+    margin: 5px;
 }
 
-.card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.12);
+.markup-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+    border-color: #1677ff !important;
 }
 
-.title-card {
+/* --- Trạng thái Active/Highlight khi click từ bản đồ --- */
+.markup-card.active {
+    border-color: #1677ff !important;
+    background-color: #f0f7ff;
+}
+
+.card-highlight {
+    animation: highlightFlash 2s ease-out;
+    border-width: 2px !important;
+    border-color: #faad14 !important; /* Màu vàng nến cho nổi bật */
+}
+
+@keyframes highlightFlash {
+    0% { background-color: #fffbe6; }
+    100% { background-color: white; }
+}
+
+/* --- Layout bên trong Card --- */
+.card-header {
     display: flex;
     align-items: center;
-    /* Đảm bảo flexbox cho title */
+    gap: 8px;
 }
 
-/* --- Cập nhật .message-container và .message --- */
-.message-container {
-    display: flex; /* Kích hoạt Flexbox */
-    align-items: center; /* Căn giữa theo chiều dọc */
-    margin: 8px 0;
-    /* Đảm bảo container không bị tràn */
-    min-width: 0; 
-}
-
-.message {
-    margin: 0; 
-    font-size: 13px;
-    color: #555;
-    
-    /* Thuộc tính QUAN TRỌNG để giới hạn chiều rộng tin nhắn */
-    flex-grow: 1; /* Cho phép nó mở rộng */
-    flex-shrink: 1; /* Cho phép nó co lại */
-    min-width: 0; /* Cho phép nội dung flex co lại dưới giới hạn */
-    
-    /* Xử lý ngắt dòng cho tin nhắn quá dài */
-    overflow-wrap: break-word; /* Ngắt từ tại ranh giới từ nếu cần */
-
-    margin-right: 10px; /* Tạo khoảng cách với icon */
-}
-
-/* --- Icon Styles (Giữ nguyên và làm sạch) --- */
-
-.edit-icon, .delete-icon {
-    /* Đảm bảo icon không bị co lại hoặc mở rộng */
-    flex-shrink: 0; 
-    margin-left: auto; /* Đẩy icon về phía cuối container */
-    padding: 4px; 
-    line-height: 1;
-    transition: color 0.2s;
-}
-
-.edit-icon {color: #525456; }
-.delete-icon {color: #aa504e; }
-
-.edit-icon:hover {
-    color: #007bff;
-}
-
-.delete-icon:hover {
-    color: #ff383b;
-}
-
-/* --- Các style khác được giữ nguyên --- */
-
-.title-card h3 {
+.message-text {
     margin: 0;
-    font-size: 16px;
-    font-weight: 600;
-    color: #333;
+    font-size: 14px;
+    color: #4d4d4d;
+    line-height: 1.6;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
 }
 
-.title-card span {
-    font-size: 13px;
-    color: #888;
-    padding-left: 5px;
+/* --- Chỉnh sửa khu vực Actions (Nút bấm) --- */
+.card-actions {
+    display: flex;
+    gap: 4px;
 }
 
-.title-card h3:hover {
-    color: #007bff !important;
+/* Tùy chỉnh nút của antd bên trong card */
+.card-actions .ant-btn-text:hover {
+    background-color: rgba(0, 0, 0, 0.04) !important;
 }
 
-.date {
-    font-size: 10px;
-    color: #888;
+/* --- Footer của Card --- */
+.card-footer {
+    display: flex;
+    justify-content: flex-end;
+    /* margin-top: 10px;
+    padding-top: 8px; */
+    border-top: 1px dashed #f0f0f0;
+}
+
+.card-footer small {
+    font-size: 11px;
+    color: #bfbfbf;
     font-style: italic;
+}
+
+/* --- Tối ưu thanh cuộn (Scrollbar) cho hiện đại --- */
+.list-markups::-webkit-scrollbar {
+    width: 6px;
+}
+
+.list-markups::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.list-markups::-webkit-scrollbar-thumb {
+    background: #e8e8e8;
+    border-radius: 10px;
+}
+
+.list-markups::-webkit-scrollbar-thumb:hover {
+    background: #d9d9d9;
 }
