@@ -267,16 +267,20 @@ function Dashboard() {
                         onClose={() => setOpenDrawer(false)}
                         bodyStyle={{ padding: 0 }}
                         styles={{
+                                header: {
+                                    background: "#1a1a1a",   // màu nền header
+                                    borderBottom: "1px solid #2a2a2a",
+                                    color: "#facc15"        // màu text (title)
+                                },
                                 body: {
-                                position: "relative",
-                                // backgroundImage: `url(${bg})`,
-                                background: `
-                                    linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.7)),
-                                    url(${bg})
-                                `,
-                                backgroundSize: "cover",
-                                backgroundPosition: "center",
-                            },
+                                    position: "relative",
+                                    background: `
+                                        linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.7)),
+                                        url(${bg})
+                                    `,
+                                    backgroundSize: "cover",
+                                    backgroundPosition: "center",
+                                }
                         }}
                     >
                         <SidebarContent

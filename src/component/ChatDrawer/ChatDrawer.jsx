@@ -15,6 +15,7 @@ const ChatDrawer = ({ open, onClose, currentUser, targetUser }) => {
     const pickerRef = useRef(null)
     const inputRef = useRef(null)
     const { t } = useTranslation();
+    let isMobile = window.innerWidth < 768;
 
     const { messages, loading, sendMessage } = useChat(
         currentUser?.id,
@@ -81,7 +82,7 @@ const ChatDrawer = ({ open, onClose, currentUser, targetUser }) => {
             open={open}
             onClose={onClose}
             placement="right"
-            width={360}
+            width={isMobile ? "90%" : 360}
             title={
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                     <div style={{
@@ -95,6 +96,7 @@ const ChatDrawer = ({ open, onClose, currentUser, targetUser }) => {
                     <span style={{ color: '#f5f5f5' }}>{targetUser?.name}</span>
                 </div>
             }
+            zIndex={9999}
             styles={{
                 body: {
                     display: 'flex', flexDirection: 'column',

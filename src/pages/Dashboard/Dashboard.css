@@ -121,3 +121,7 @@ body,
   opacity: 0.5;
   transition: all; /* ease-out: Bắt đầu nhanh, kết thúc chậm forwards: Giữ trạng thái cuối cùng của animation */
 }
+
+.ant-drawer-close {
+    color: #facc15 !important;   /* vàng */
+}
