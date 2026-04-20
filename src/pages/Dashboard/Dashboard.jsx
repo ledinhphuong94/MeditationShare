@@ -265,6 +265,7 @@ function Dashboard() {
                         height="80%"         // giống app thật
                         open={openDrawer}
                         onClose={() => setOpenDrawer(false)}
+                        destroyOnClose={false}
                         bodyStyle={{ padding: 0 }}
                         styles={{
                                 header: {
