@@ -18,15 +18,28 @@ function ResetPassword() {
 
     // Supabase tự parse token từ URL hash và set session
     useEffect(() => {
-        const { data: { subscription } } = supabase.auth.onAuthStateChange(
-            (event, session) => {
-                if (event === 'PASSWORD_RECOVERY') {
-                    setIsValidSession(true)
-                }
+        const init = async () => {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (session?.user) {
+                setIsValidSession(true);
+                return;
             }
-        )
-        return () => subscription.unsubscribe()
-    }, [])
+
+            const { data: { subscription } } = supabase.auth.onAuthStateChange(
+                (event, session) => {
+                    console.log('Auth event:', event, session);
+                    if (event === 'PASSWORD_RECOVERY' || 
+                        (event === 'SIGNED_IN' && session)) {
+                        setIsValidSession(true);
+                    }
+                }
+            );
+
+            return () => subscription.unsubscribe();
+        };
+
+        init();
+    }, []);
 
     const handleReset = async ({ password }) => {
         setLoading(true)
