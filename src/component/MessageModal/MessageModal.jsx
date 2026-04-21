@@ -20,8 +20,9 @@ function MessageModal({ isOpen, formData, onClose, onSubmit }) {
                     message: formData.message || "",
                 });
             } else {
+                let name = username === 'Anonymous' ? '' : username;
                 form.setFieldsValue({
-                    name: saved || username === 'Anonymous' ? '' : username,
+                    name: name || saved,
                 });
             }
         } else {

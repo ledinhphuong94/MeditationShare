@@ -22,7 +22,7 @@ const TabsSwitcher = ({ activeTab, onChange, myUserRole, unreadCount = 0 }) => {
       label: (
         <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
             <TeamOutlined />
-            People
+            {t('userCardList.People')}
             {/* 👇 Chấm đỏ chớp khi có tin mới */}
             {isLoggedIn && unreadCount > 0 && (
                 <Badge
