@@ -13,10 +13,19 @@ export default function MarkupCardHeader({ totalUsers }) {
         <div className='markup-header-container'>
             <Typography className='markup-header-content'>
                 {/* Tiêu đề chính */}
-                <Title level={2} className='markup-title'>
-                    {t("dashboard.light_map")}
-                </Title>
-
+                <a
+                    href="https://bandoanhsang.vercel.app/"
+                    // target="_blank"
+                    rel="noopener noreferrer"
+                    style={{ textDecoration: 'none' }}
+                >
+                    <Title 
+                        level={2} 
+                        className='markup-title'
+                    >
+                        {t("dashboard.light_map")}
+                    </Title>
+                </a>
                 {/* Mô tả - Giảm kích thước chữ trên mobile tự động qua CSS */}
                 <Paragraph className="markup-description">
                     {t("dashboard.tap_map_light_candle")}

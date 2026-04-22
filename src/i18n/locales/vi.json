@@ -40,7 +40,8 @@
         "email_invalid": "Email không hợp lệ",
         "email_required": "Vui lòng điền Email",
         "password_required": "Cần nhập mật khẩu",
-        "password_min": "Mật khẩu tối thiểu 6 chữ cái"
+        "password_min": "Mật khẩu tối thiểu 6 chữ cái",
+        "name_required": "Vui lòng điền Tên"
     },
     "admin": {
 

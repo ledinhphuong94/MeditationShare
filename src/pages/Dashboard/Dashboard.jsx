@@ -3,6 +3,7 @@ import { useEffect, useState, useRef, useCallback } from "react";
 import { Layout, App, Drawer } from "antd";
 import { supabase } from "../../supabaseClient.js";
 import MessageModal from '../../component/MessageModal/MessageModal.jsx';
+import PromoPopup from '../../component/PromoPopup/PromoPopup.jsx';
 import Mapty from '../../component/Mapty/Mapty.jsx';
 import bellSound from "../../sound/bell2.mp3";
 import { useAuth } from '../../context/AuthContext.js';
@@ -313,6 +314,8 @@ function Dashboard() {
                 onClose={handleCloseModal}
                 onSubmit={handleSubmitModal}
             />
+
+            <PromoPopup />
         </Layout>
     </UsersProvider>
 }

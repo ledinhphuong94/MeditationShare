@@ -40,7 +40,8 @@
         "email_invalid": "Email invalid",
         "email_required": "Email required",
         "password_required": "Password required",
-        "password_min": "Password at least 6 letters"
+        "password_min": "Password at least 6 letters",
+        "name_required": "Name required"
     },
     "admin": {
 

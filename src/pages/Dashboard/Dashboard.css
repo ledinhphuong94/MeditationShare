@@ -14,7 +14,9 @@ body,
 
 /* SIDEBAR */
 .sidebar {
-  background: url(../../img/sunrise.jpg) no-repeat center/cover;
+  /* background: url(../../img/bluesky.jpg) no-repeat center/cover; */
+   background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.7)), url(../../img/sunrise.jpg) no-repeat center/cover
+                                    
 }
 
 /* INNER FLEX */
