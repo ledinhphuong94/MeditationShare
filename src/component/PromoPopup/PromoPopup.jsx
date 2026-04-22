@@ -68,7 +68,7 @@ const PromoPopup = () => {
                             </p>
 
                             <p style={{ margin: "6px 0", fontSize: 13 }}>
-                                📅 1/5 - 4/5/2026
+                                📅 01/05/2026 - 04/05/2026
                             </p>
 
                             <Button
