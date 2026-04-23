@@ -66,3 +66,26 @@ export const createUserIcon = (user, size = 32) => {
         popupAnchor: [0, -size / 2],
     })
 }
+
+// Thay hàm format thời gian
+export const formatMessageTime = (dateStr) => {
+    const date = new Date(dateStr)
+    const now = new Date()
+
+    const isToday = date.toDateString() === now.toDateString()
+
+    const yesterday = new Date(now)
+    yesterday.setDate(now.getDate() - 1)
+    const isYesterday = date.toDateString() === yesterday.toDateString()
+
+    const isThisWeek = (now - date) < 7 * 24 * 60 * 60 * 1000
+    const isThisYear = date.getFullYear() === now.getFullYear()
+
+    const time = date.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })
+
+    if (isToday) return time
+    if (isYesterday) return `Hôm qua ${time}`
+    if (isThisWeek) return date.toLocaleDateString('vi-VN', { weekday: 'short' }) + `, ${time}`
+    if (isThisYear) return date.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit' }) + `, ${time}`
+    return date.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' }) + `, ${time}`
+}

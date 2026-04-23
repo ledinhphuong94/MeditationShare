@@ -84,7 +84,8 @@
         "please_fill_both": "Vui lòng nhập cả Tên và Thông điệp.",
         "edit_message": "Sửa thông điệp",
         "update": "Cập nhật",
-        "enter_your_name": "Vui lòng nhập tên"
+        "enter_your_name": "Vui lòng nhập tên",
+        "load_all_mess":"Đã tải hết tin nhắn"
     },
     "userCardList": {
         "Candle": "Nến",

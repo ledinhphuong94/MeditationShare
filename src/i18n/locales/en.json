@@ -84,7 +84,8 @@
         "please_fill_both": "Please fill both Name and Message.",
         "edit_message": "Edit Message",
         "update": "Update",
-        "enter_your_name": "Enter your name"
+        "enter_your_name": "Enter your name",
+        "load_all_mess":"Loaded all messages"
     },
 
     "userCardList": {

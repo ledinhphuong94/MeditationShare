@@ -1,12 +1,14 @@
 import { Drawer, Input, Button, Spin } from 'antd'
 import { SendOutlined, SmileOutlined } from '@ant-design/icons'
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import Picker from '@emoji-mart/react'
 import data from '@emoji-mart/data'
 import { useChat } from '../../hooks/useChat'
 import { getInitials, getAvatarColor } from '../../utils/common'
 import * as prohibitWord from "../../utils/prohibitMessage.js";
 import { useTranslation } from "react-i18next";
+import {formatMessageTime} from "../../utils/common.js";
+import chatImgBg from "../../img/bluesky.jpg"
 
 const ChatDrawer = ({ open, onClose, currentUser, targetUser }) => {
     const [input, setInput] = useState('')
@@ -15,17 +17,63 @@ const ChatDrawer = ({ open, onClose, currentUser, targetUser }) => {
     const pickerRef = useRef(null)
     const inputRef = useRef(null)
     const { t } = useTranslation();
+    const messagesContainerRef = useRef(null)
+    const prevScrollHeightRef = useRef(0)
+    const isLoadingMoreRef = useRef(false)
+    const isFirstLoadRef = useRef(true) // ✅ track lần đầu load
+
     let isMobile = window.innerWidth < 768;
 
-    const { messages, loading, sendMessage } = useChat(
+    const { messages, loading, sendMessage, loadingMore, hasMore, loadMore } = useChat(
         currentUser?.id,
         targetUser?.user_id
     )
 
-    // Scroll xuống tin mới nhất
+    // ✅ Reset isFirstLoadRef khi đổi target
     useEffect(() => {
-        bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
-    }, [messages])
+        isFirstLoadRef.current = true
+    }, [targetUser?.user_id])
+
+    // ✅ Chỉ scroll xuống cuối khi lần đầu load xong hoặc gửi tin mới
+    useEffect(() => {
+        if (loading) return // đang load, chưa scroll
+
+        if (isFirstLoadRef.current) {
+            // Lần đầu load xong → scroll xuống cuối
+            bottomRef.current?.scrollIntoView({ behavior: 'auto' })
+            isFirstLoadRef.current = false
+            return
+        }
+
+        // Kiểm tra nếu đang ở gần cuối → scroll xuống (tin mới đến)
+        const el = messagesContainerRef.current
+        if (!el) return
+        const isNearBottom = el.scrollHeight - el.scrollTop - el.clientHeight < 100
+        if (isNearBottom) {
+            bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
+        }
+    }, [messages, loading])
+
+    // ✅ Restore scroll position sau khi loadMore prepend tin cũ
+    useEffect(() => {
+        if (!isLoadingMoreRef.current) return
+        const el = messagesContainerRef.current
+        if (!el) return
+        el.scrollTop = el.scrollHeight - prevScrollHeightRef.current
+    }, [messages.length])
+
+    // ✅ Detect scroll lên đầu → load more
+    const handleScroll = useCallback(() => {
+        const el = messagesContainerRef.current
+        if (!el || isLoadingMoreRef.current) return
+        if (el.scrollTop < 50 && hasMore && !loadingMore) {
+            isLoadingMoreRef.current = true
+            prevScrollHeightRef.current = el.scrollHeight
+            loadMore().finally(() => {
+                isLoadingMoreRef.current = false
+            })
+        }
+    }, [hasMore, loadingMore, loadMore])
 
     // Click ngoài picker → đóng
     useEffect(() => {
@@ -50,12 +98,10 @@ const ChatDrawer = ({ open, onClose, currentUser, targetUser }) => {
         const native = emoji.native
         const el = inputRef.current?.input
         if (el) {
-            // Chèn emoji vào đúng vị trí cursor
             const start = el.selectionStart
             const end = el.selectionEnd
             const newValue = input.slice(0, start) + native + input.slice(end)
             setInput(newValue)
-            // Restore cursor sau emoji
             setTimeout(() => {
                 el.focus()
                 el.setSelectionRange(start + native.length, start + native.length)
@@ -67,7 +113,6 @@ const ChatDrawer = ({ open, onClose, currentUser, targetUser }) => {
 
     const handleSend = async () => {
         if (!input.trim()) return;
-        // Kiểm tra nội dung có chứa từ cấm không?
         if (prohibitWord.containsForbiddenContent(input.trim()) || prohibitWord.containsProfanity(input.trim())) {
             alert(t("messageModal.not_valid_message"));
             return;
@@ -106,10 +151,39 @@ const ChatDrawer = ({ open, onClose, currentUser, targetUser }) => {
             }}
         >
             {/* ── Messages ── */}
-            <div style={{ flex: 1, overflowY: 'auto', padding: '16px 12px' }}>
-                {loading
-                    ? <div style={{ textAlign: 'center', paddingTop: 40 }}><Spin /></div>
-                    : messages.map((msg) => {
+            <div
+                ref={messagesContainerRef}
+                onScroll={handleScroll}
+                style={{ 
+                    position: 'relative', zIndex: 1,
+                    height: '100%', overflowY: 'auto',
+                    padding: '16px 12px',
+                    backgroundImage: `linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url(${chatImgBg})`,
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
+                }}
+            >
+                {/* Load more indicator */}
+                {loadingMore && (
+                    <div style={{ textAlign: 'center', padding: '8px 0' }}>
+                        <Spin size="small" />
+                    </div>
+                )}
+
+                {/* Đã tải hết */}
+                {!hasMore && messages.length > 0 && (
+                    <div style={{ textAlign: 'center', fontSize: 11, color: '#555', padding: '8px 0' }}>
+                        {t('messageModal.load_all_mess')}
+                    </div>
+                )}
+
+                {/* ✅ Loading lần đầu */}
+                {loading ? (
+                    <div style={{ textAlign: 'center', paddingTop: 40 }}>
+                        <Spin />
+                    </div>
+                ) : (
+                    messages.map((msg) => {
                         const isMine = msg.sender_id === currentUser?.id
                         return (
                             <div key={msg.id} style={{
@@ -134,15 +208,13 @@ const ChatDrawer = ({ open, onClose, currentUser, targetUser }) => {
                                         fontSize: 10, opacity: 0.5,
                                         marginTop: 3, textAlign: 'right',
                                     }}>
-                                        {new Date(msg.created_at).toLocaleTimeString('vi-VN', {
-                                            hour: '2-digit', minute: '2-digit'
-                                        })}
+                                        {formatMessageTime(msg.created_at)}
                                     </div>
                                 </div>
                             </div>
                         )
                     })
-                }
+                )}
                 <div ref={bottomRef} />
             </div>
 
@@ -183,7 +255,6 @@ const ChatDrawer = ({ open, onClose, currentUser, targetUser }) => {
                     alignItems: 'center',
                     gap: 8,
                 }}>
-                    {/* Emoji button */}
                     <Button
                         shape="circle"
                         icon={<SmileOutlined />}
@@ -197,7 +268,6 @@ const ChatDrawer = ({ open, onClose, currentUser, targetUser }) => {
                         }}
                     />
 
-                    {/* Input */}
                     <Input
                         ref={inputRef}
                         value={input}
@@ -212,7 +282,6 @@ const ChatDrawer = ({ open, onClose, currentUser, targetUser }) => {
                         }}
                     />
 
-                    {/* Send button */}
                     <Button
                         type="primary"
                         shape="circle"
