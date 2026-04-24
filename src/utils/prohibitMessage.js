@@ -3,6 +3,29 @@
  * @param {string} inputString - Chuỗi cần kiểm tra.
  * @returns {boolean} - Trả về true nếu chuỗi chứa nội dung bị chặn, ngược lại là false.
  */
+
+function normalize(str) {
+    return str
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "") // remove accents
+        .toLowerCase();
+}
+
+// 🔧 Tạo regex chống bypass
+function createFlexibleRegex(word) {
+    const chars = word.split("");
+
+    // cho phép ký tự chen vào giữa (., space, _, *)
+    const pattern = chars
+        .map((c) => `${c}+[^a-zA-Z0-9]*`)
+        .join("");
+
+    return new RegExp(`\\b${pattern}\\b`, "i");
+}
+
+const forbiddenWords_vi = ['đụ', 'lồn', 'cặc', 'địt', 'buồi', 'chửi thề', 'thằng chó', "giái", "nứng", "chó đẻ", "súc vật", "chóđẻ", "đỉ", "cộng sản", "sục", "ngu", "csvn" /* thêm các từ khác */];
+const forbiddenWords_en = ['fuck', 'shit', 'asshole', 'bitch', 'damn', 'crap', "ass", "f.u.c.k" /* thêm các từ khác */];
+
 export function containsForbiddenContent(inputString) {
     // Chuyển về chữ thường để kiểm tra không phân biệt chữ hoa/thường
     const lowerCaseInput = inputString.toLowerCase();
@@ -25,16 +48,15 @@ export function containsForbiddenContent(inputString) {
     return regex.test(lowerCaseInput);
 }
 
-const forbiddenWords_vi = ['đụ', 'lồn', 'cặc', 'địt', 'buồi', 'chửi thề', 'thằng chó', "giái", "nứng", "chó đẻ", "súc vật", "chóđẻ", "đỉ", "cộng sản", "sục", "ngu", "csvn" /* thêm các từ khác */];
-const forbiddenWords_en = ['fuck', 'shit', 'asshole', 'bitch', 'damn', 'crap', "ass", "f.u.c.k" /* thêm các từ khác */];
 
-export function containsProfanity(inputString) {
-    const lowerCaseInput = inputString.toLowerCase();
-    
-    // Kết hợp danh sách (tùy thuộc vào ngôn ngữ bạn muốn lọc)
+// 🚀 MAIN FUNCTION
+export function containsProfanity(input) {
+    const normalizedInput = normalize(input);
     const allForbiddenWords = forbiddenWords_vi.concat(forbiddenWords_en);
     return allForbiddenWords.some((word) => {
-        return lowerCaseInput.includes(word);
+        const normalizedWord = normalize(word);
+        const regex = createFlexibleRegex(normalizedWord);
+
+        return regex.test(normalizedInput);
     });
-  
 }
