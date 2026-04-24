@@ -109,5 +109,24 @@
         "error_delete": "Error when deleting candle.",
         "fail_delete": "Failed to delete candle.",
         "cancel": "Cancel"
+    },
+
+    "installApp": {
+        "install_app_more_convenient": "Install app for more convenience",
+        "install_app": "Install app",
+        "select_share": "Press the Share button",
+        "select_share_desc": "Located in the Safari toolbar at the bottom of the screen",
+        "select_add_to_main_screen": "Select \"Add to Home Screen\"",
+        "select_add_to_main_screen_desc": "Scroll down in the list of options",
+        "copy": "Copy",
+        "add_to_main_screen": "Add to Home Screen",
+        "bookmark": "Bookmark",
+        "select_here": "Select here",
+        "select_add_right_top": "Press \"Add\" in the top right corner",
+        "select_add_right_top_desc": "Press \"Add\" in the right corner",
+        "feature_only_work_on_browser":"This feature only works on the browser",
+        "add":"Add",
+        "install_light_map":"Install Light Map",
+        "only_tree_steps":"Only 3 simple steps"
     }
 }

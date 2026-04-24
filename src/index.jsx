@@ -6,6 +6,7 @@ import { AuthProvider } from './context/AuthContext.js';
 import reportWebVitals from './reportWebVitals.js';
 import "./i18n/index.js";
 import { App as AntdApp, ConfigProvider } from 'antd'
+import { register } from './serviceWorkerRegistration.js'
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -37,3 +38,4 @@ root.render(
 );
 
 reportWebVitals();
+register();

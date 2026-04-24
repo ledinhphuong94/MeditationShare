@@ -11,6 +11,7 @@ import { useTranslation } from "react-i18next";
 import { UsersProvider } from '../../context/UsersContext.js';
 import SidebarContent from "../../component/SidebarContent/SidebarContent";
 import bg from "../../img/sunrise.jpg";
+import InstallPWA from "../../component/InstallPWA/InstallPWA.jsx"
 
 const { Content, Sider } = Layout;
 function Dashboard() {
@@ -261,6 +262,7 @@ function Dashboard() {
 
                 {/* ✅ MOBILE */}
                 {isMobile && (
+                    <>
                     <Drawer
                         placement="bottom"   // 🔥 QUAN TRỌNG
                         height="80%"         // giống app thật
@@ -305,7 +307,10 @@ function Dashboard() {
                             onLoadMore={loadMore}
                             loadingMoreRef={loadingMoreRef}
                         />
+                        
                     </Drawer>
+                    <InstallPWA />
+                    </>
                 )}
         
             <MessageModal

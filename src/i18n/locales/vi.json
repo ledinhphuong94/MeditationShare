@@ -108,5 +108,24 @@
         "error_delete": "Lỗi khi xóa nến.",
         "fail_delete": "Failed to delete candle.",
         "cancel": "Hủy"
+    },
+
+    "installApp": {
+        "install_app_more_convenient": "Cài app để tiện lợi hơn",
+        "install_app": "Cài app",
+        "select_share":"Nhấn nút Share",
+        "select_share_desc": "Nằm ở thanh công cụ Safari phía dưới màn hình",
+        "select_add_to_main_screen":"Chọn \"Thêm vào màn hình chính\"",
+        "select_add_to_main_screen_desc":"Kéo xuống phía dưới trong danh sách tùy chọn",
+        "copy": "Sao chép",
+        "add_to_main_screen": "Thêm vào màn hình chính",
+        "bookmark": "Đánh dấu",
+        "select_here":"Chọn ở đây",
+        "select_add_right_top":"Nhấn \"Thêm\" ở góc phải trên",
+        "select_add_right_top_desc":"Nhấn \"Thêm\" ở góc phải trên",
+        "feature_only_work_on_browser":"Tính năng này chỉ hoạt động trên trình duyệt",
+        "add":"Thêm",
+        "install_light_map":"Cài Bản Đồ Ánh Sáng",
+        "only_tree_steps":"Chỉ 3 bước đơn giản"
     }
 }
