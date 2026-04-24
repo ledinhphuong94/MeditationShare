@@ -111,9 +111,9 @@
     },
 
     "installApp": {
-        "install_app_more_convenient": "Cài app để tiện lợi hơn",
-        "install_app": "Cài app",
-        "select_share":"Nhấn nút Share",
+        "install_app_more_convenient": "Thêm vào màn hình để tiện lợi hơn",
+        "install_app": "Thêm vào màn hình",
+        "select_share":"Nhấn nút Chia sẽ",
         "select_share_desc": "Nằm ở thanh công cụ Safari phía dưới màn hình",
         "select_add_to_main_screen":"Chọn \"Thêm vào màn hình chính\"",
         "select_add_to_main_screen_desc":"Kéo xuống phía dưới trong danh sách tùy chọn",

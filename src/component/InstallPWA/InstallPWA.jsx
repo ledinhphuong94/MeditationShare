@@ -11,28 +11,35 @@ export default function InstallPWA() {
     const { t } = useTranslation();
 
     useEffect(() => {
-        // ✅ Ẩn nếu đã cài (mở từ màn hình chính)
-        const isInstalled = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone
-        if (isInstalled) return // không show gì cả
+        const isInstalled =
+            window.matchMedia('(display-mode: standalone)').matches ||
+            window.navigator.standalone
 
-        // ✅ Chỉ show trên mobile
+        if (isInstalled) return
+
         const isMobile = /iphone|ipad|ipod|android/i.test(navigator.userAgent)
         if (!isMobile) return
 
-        // Android
-        const handler = (e) => {
-            e.preventDefault()
-            setDeferredPrompt(e)
-            setShowBanner(true)
-        }
-        window.addEventListener('beforeinstallprompt', handler)
-
-        // iOS Safari
         const iosDevice = /iphone|ipad|ipod/i.test(navigator.userAgent)
+        const androidDevice = /android/i.test(navigator.userAgent)
+
+        // iOS
         if (iosDevice) {
             setIsIos(true)
             setShowBanner(true)
         }
+
+        // Android fallback: luôn show
+        if (androidDevice) {
+            setShowBanner(true)
+        }
+
+        const handler = (e) => {
+            e.preventDefault()
+            setDeferredPrompt(e)
+        }
+
+        window.addEventListener('beforeinstallprompt', handler)
 
         return () => window.removeEventListener('beforeinstallprompt', handler)
     }, [])
@@ -42,10 +49,20 @@ export default function InstallPWA() {
             setShowIosModal(true)
             return
         }
-        if (!deferredPrompt) return
+
+        // ❗ nếu không có prompt → fallback hướng dẫn
+        if (!deferredPrompt) {
+            alert('Vui lòng dùng menu Chrome → "Add to Home screen"')
+            return
+        }
+
         deferredPrompt.prompt()
         const { outcome } = await deferredPrompt.userChoice
-        if (outcome === 'accepted') setShowBanner(false)
+
+        if (outcome === 'accepted') {
+            setShowBanner(false)
+        }
+
         setDeferredPrompt(null)
     }
 

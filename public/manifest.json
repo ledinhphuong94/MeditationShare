@@ -1,24 +1,40 @@
 {
-  "short_name": "Ánh Sáng",
+  "id": "/",
+  "short_name": "Light Map",
   "name": "Bản Đồ Ánh Sáng",
   "description": "Bản đồ nến ánh sáng",
   "icons": [
     {
-      "src": "logo192.png",
+      "src": "/logo192.png",
       "type": "image/png",
-      "sizes": "192x192"
+      "sizes": "192x192",
+      "purpose": "any"
     },
     {
-      "src": "logo512.png",
+      "src": "/logo512.png",
       "type": "image/png",
       "sizes": "512x512",
-      "purpose": "any maskable"
+      "purpose": "maskable"
     }
   ],
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
   "theme_color": "#1a1a1a",
   "background_color": "#0f0f0f",
   "orientation": "portrait",
-  "scope": "/"
+
+  "screenshots": [
+    {
+      "src": "/screenshot-desktop.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide"
+    },
+    {
+      "src": "/screenshot-mobile.png",
+      "sizes": "375x812",
+      "type": "image/png"
+    }
+  ]
 }
