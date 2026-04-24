@@ -23,7 +23,7 @@ function createFlexibleRegex(word) {
     return new RegExp(`\\b${pattern}\\b`, "i");
 }
 
-const forbiddenWords_vi = ['đụ', 'lồn', 'cặc', 'địt', 'buồi', 'chửi thề', 'thằng chó', "giái", "nứng", "chó đẻ", "súc vật", "chóđẻ", "đỉ", "cộng sản", "sục", "ngu", "csvn" /* thêm các từ khác */];
+const forbiddenWords_vi = ['đụ', 'lồn', 'cặc', 'địt', 'buồi', 'thằng chó', "giái", "nứng", "chó đẻ", "súc vật", "chóđẻ", "đỉ", "cộng sản", "sục", "csvn" /* thêm các từ khác */];
 const forbiddenWords_en = ['fuck', 'shit', 'asshole', 'bitch', 'damn', 'crap', "ass", "f.u.c.k" /* thêm các từ khác */];
 
 export function containsForbiddenContent(inputString) {
