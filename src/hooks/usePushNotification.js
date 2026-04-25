@@ -42,15 +42,12 @@ export const usePushNotification = (userId) => {
             const token = await getToken(messaging, { vapidKey: VAPID_KEY })
             if (!token) return
 
-            const deviceId = getDeviceId()
-
-            // ✅ Upsert theo device_id — mỗi thiết bị 1 token, nhiều thiết bị per user
+            // ✅ Upsert theo token — iOS và Android đều hoạt động
             await supabase.from('push_tokens').upsert({
                 user_id: userId,
                 token,
-                device_id: deviceId,
                 updated_at: new Date().toISOString(),
-            }, { onConflict: 'device_id' })
+            }, { onConflict: 'token' })
 
         } catch (err) {
             console.error('Push registration error:', err)

@@ -129,6 +129,18 @@ serve(async (req) => {
             }).then(r => r.json())
         ))
 
+        // ✅ Thêm vào đây — xóa token invalid
+        const invalidTokens = results
+            .filter(r => r.error?.code === 404 || r.error?.status === 'NOT_FOUND')
+            .map((r, i) => tokens[i].token)
+
+        if (invalidTokens.length > 0) {
+            await supabase
+                .from('push_tokens')
+                .delete()
+                .in('token', invalidTokens)
+        }
+
         return new Response(JSON.stringify(results), { 
             status: 200,
             headers: corsHeaders // ✅ thêm vào response
