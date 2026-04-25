@@ -11,7 +11,7 @@ import { useTranslation } from "react-i18next";
 import { UsersProvider } from '../../context/UsersContext.js';
 import SidebarContent from "../../component/SidebarContent/SidebarContent";
 import bg from "../../img/sunrise.jpg";
-import InstallPWA from "../../component/InstallPWA/InstallPWA.jsx"
+// import InstallPWA from "../../component/InstallPWA/InstallPWA.jsx"
 
 const { Content, Sider } = Layout;
 function Dashboard() {
@@ -309,7 +309,7 @@ function Dashboard() {
                         />
                         
                     </Drawer>
-                    <InstallPWA />
+                    {/* <InstallPWA /> */}
                     </>
                 )}
         

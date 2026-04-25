@@ -1,4 +1,4 @@
-const CACHE_NAME = 'bandoanhsang-v1'
+const CACHE_NAME = 'bandoanhsang-v2'
 const urlsToCache = ['/', '/index.html']
 
 self.addEventListener('install', (event) => {
@@ -21,7 +21,15 @@ self.addEventListener('activate', (event) => {
 
 self.addEventListener('fetch', (event) => {
     event.respondWith(
-        caches.match(event.request)
-            .then(response => response || fetch(event.request))
-    )
-})
+        // Ưu tiên gọi lên server trước (Network-first)
+        fetch(event.request)
+            .then(response => {
+                // Tùy chọn: Bạn có thể lưu bản mới nhất vào cache tại đây để dùng khi offline
+                return response;
+            })
+            .catch(() => {
+                // Nếu gọi server thất bại (mất mạng), mới dùng đến cache
+                return caches.match(event.request);
+            })
+    );
+});
