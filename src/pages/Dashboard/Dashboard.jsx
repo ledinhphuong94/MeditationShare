@@ -132,16 +132,16 @@ function Dashboard() {
                     notification.success({ message: t("dashboard.new_candle_lit") });
 
                     // ✅ Thêm vào đây — không gửi cho chính mình
-                    if (!isMe) {
-                        await supabase.functions.invoke('send-push', {
-                            body: {
-                                user_id: userId, // gửi cho user hiện tại
-                                title: '🕯️ Nến mới được thắp',
-                                body: `${payload.new.name}: ${payload.new.message?.slice(0, 80) || ''}`,
-                                url: '/',
-                            }
-                        })
-                    }
+                    // if (!isMe) {
+                    //     await supabase.functions.invoke('send-push', {
+                    //         body: {
+                    //             user_id: userId, // gửi cho user hiện tại
+                    //             title: '🕯️ Nến mới được thắp',
+                    //             body: `${payload.new.name}: ${payload.new.message?.slice(0, 80) || ''}`,
+                    //             url: '/',
+                    //         }
+                    //     })
+                    // }
                 } 
                 else if (payload.eventType === "UPDATE") {
                     setMarkers((prev) => prev.map((i) => i.id === payload.new.id ? payload.new : i));
