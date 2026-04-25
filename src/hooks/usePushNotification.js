@@ -31,11 +31,12 @@ export const usePushNotification = (userId) => {
             const token = await getToken(messaging, { vapidKey: VAPID_KEY })
             if (!token) return
 
+            // ✅ Mỗi user chỉ lưu 1 token mới nhất
             await supabase.from('push_tokens').upsert({
                 user_id: userId,
                 token,
                 updated_at: new Date().toISOString(),
-            }, { onConflict: 'token' })
+            }, { onConflict: 'user_id' })
 
         } catch (err) {
             console.error('Push registration error:', err)

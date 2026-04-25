@@ -10,42 +10,65 @@ const corsHeaders = {
 
 // ✅ Dùng FCM API V1 (không phải Legacy)
 const getAccessToken = async (serviceAccount: any) => {
-    const header = btoa(JSON.stringify({ alg: 'RS256', typ: 'JWT' }))
     const now = Math.floor(Date.now() / 1000)
-    const claim = btoa(JSON.stringify({
+    
+    const claim = {
         iss: serviceAccount.client_email,
         scope: 'https://www.googleapis.com/auth/firebase.messaging',
         aud: 'https://oauth2.googleapis.com/token',
         exp: now + 3600,
         iat: now,
-    }))
+    }
 
-    const { privateKey } = await crypto.subtle.importKey(
+    const header = { alg: 'RS256', typ: 'JWT' }
+
+    const encode = (obj: any) => 
+        btoa(JSON.stringify(obj))
+            .replace(/=/g, '')
+            .replace(/\+/g, '-')
+            .replace(/\//g, '_')
+
+    const signingInput = `${encode(header)}.${encode(claim)}`
+
+    // ✅ Fix: parse đúng định dạng private key PEM
+    const pemContents = serviceAccount.private_key
+        .replace('-----BEGIN PRIVATE KEY-----', '')
+        .replace('-----END PRIVATE KEY-----', '')
+        .replace(/\n/g, '')
+        .trim()
+
+    const binaryKey = Uint8Array.from(atob(pemContents), c => c.charCodeAt(0))
+
+    // ✅ Fix: import key đúng cách
+    const privateKey = await crypto.subtle.importKey(
         'pkcs8',
-        str2ab(serviceAccount.private_key
-            .replace('-----BEGIN PRIVATE KEY-----\n', '')
-            .replace('\n-----END PRIVATE KEY-----\n', '')
-        ),
-        { name: 'RSASSA-PKCS1-v1_5', hash: 'SHA-256' },
+        binaryKey.buffer,
+        { name: 'RSASSA-PKCS1-v1_5', hash: { name: 'SHA-256' } },
         false,
         ['sign']
     )
 
     const signature = await crypto.subtle.sign(
-        'RSASSA-PKCS1-v1_5',
+        { name: 'RSASSA-PKCS1-v1_5' },
         privateKey,
-        new TextEncoder().encode(`${header}.${claim}`)
+        new TextEncoder().encode(signingInput)
     )
 
-    const jwt = `${header}.${claim}.${btoa(String.fromCharCode(...new Uint8Array(signature)))}`
+    const encodedSignature = btoa(String.fromCharCode(...new Uint8Array(signature)))
+        .replace(/=/g, '')
+        .replace(/\+/g, '-')
+        .replace(/\//g, '_')
+
+    const jwt = `${signingInput}.${encodedSignature}`
 
     const res = await fetch('https://oauth2.googleapis.com/token', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: `grant_type=urn:ietf:params:oauth:grant-type:jwt-bearer&assertion=${jwt}`,
     })
-    const { access_token } = await res.json()
-    return access_token
+
+    const data = await res.json()
+    return data.access_token
 }
 
 const str2ab = (str: string) => {

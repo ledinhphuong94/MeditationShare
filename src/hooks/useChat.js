@@ -118,7 +118,7 @@ export const useChat = (currentUserId, targetUserId) => {
         if (error) console.error('sendMessage error:', error);
         // ✅ Gửi push cho receiver
         if (!error) {
-            await supabase.functions.invoke('send-push', {
+            supabase.functions.invoke('send-push', {
                 body: {
                     user_id: targetUserId,
                     title: '💬 Tin nhắn mới',
