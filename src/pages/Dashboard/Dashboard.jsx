@@ -42,7 +42,7 @@ function Dashboard() {
     const loadingMoreRef = useRef(false);
     const hasMoreRef = useRef(true);
     const pageRef = useRef(0);
-    usePushNotification(userId)
+    usePushNotification(userId, userRole)
 
     const PAGE_SIZE = 75;
     const fetchMarkers = useCallback( async (pageIndex = 0) => {
