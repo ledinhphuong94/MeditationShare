@@ -28,7 +28,7 @@ const UserCardList = ({ mapRef, myUserId, activeUserId, onSendMessage }) => {
     const itemRefs = useRef({})
     const [unreadMap, setUnreadMap] = useState({});
     const { t } = useTranslation();
-    const { users, myLocation } = useUsersContext();
+    const { users } = useUsersContext();
     // ── Unread: fetch + realtime ───────────────────────────────
     useEffect(() => {
         if (!myUserId) return

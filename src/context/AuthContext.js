@@ -1,158 +1,113 @@
-import React, { createContext, useState, useContext, useEffect } from 'react';
+import { createContext, useState, useContext, useEffect, useMemo, useCallback } from 'react';
 import { supabase } from '../supabaseClient.js';
 import { useTranslation } from "react-i18next";
 
-// 1. Tạo Context
 const AuthContext = createContext(null);
 
-// =========================================================
-// HÀM HELPER ĐỘC LẬP (Không phụ thuộc vào Provider state)
-// =========================================================
-
-// Hàm này được tách ra để tránh lỗi recursion RLS, đồng thời lấy role và name
 const fetchUserProfileAndRole = async (id) => {
-    // Truy vấn bảng profiles
-    // const { data, error } = await supabase
-    //     .from('profiles')
-    //     .select('role, name') // Chỉ select những cột cần thiết
-    //     .eq('id', id)
-    //     .single(); // Chỉ mong muốn 1 kết quả
-
     const { data, error } = await supabase.rpc('get_user_role', { user_id: id });
-    // console.log('data', data)
-    if (error && error.code !== 'PGRST116') { // PGRST116: Dòng không tồn tại (OK)
+    if (error && error.code !== 'PGRST116') {
         console.error('Lỗi khi fetch profile:', error);
     }
-
-    if (data) {
-        return data || 'user';
-    }
-    
-    // Nếu chưa có profile (rất hiếm nếu Function backend hoạt động)
-    return 'anon'; 
+    return data || 'anon'; 
 };
 
-
-// 2. Tạo Provider Component
 export const AuthProvider = ({ children }) => {
-    const [userId, setUserId] = useState(null);
-    const [userRole, setUserRole] = useState('loading');
-    const [username, setUsername] = useState('');
-    const [isLoading, setIsLoading] = useState(true); // Thêm trạng thái loading
+    // Gộp các state liên quan đến user vào 1 object để giảm số lần set dời rạc
+    const [authState, setAuthState] = useState({
+        userId: null,
+        userRole: 'loading',
+        username: '',
+        isLoading: true
+    });
+    
     const { t } = useTranslation();
 
-    // Hợp nhất logic cập nhật state
-    const setAuthState = (id, role, name) => {
-        setUserId(id);
-        setUserRole(role);
-        setUsername(name);
-        setTimeout(() => {
-            setIsLoading(false); // Đặt isLoading thành false sau khi đã cập nhật state
-        }, 1000);
-        //   setIsLoading(false);
-    };
-  
-    // Hàm đăng xuất (Gọi supabase.auth.signOut)
-    const logout = async () => {
-        // Supabase sẽ tự động xử lý signOut và kích hoạt AuthListener (SIGNED_OUT)
+    // Dùng useCallback để hàm logout không bị tạo lại mỗi lần render
+    const logout = useCallback(async () => {
         const { error } = await supabase.auth.signOut();
         localStorage.removeItem('meditation_anonymous_user_id');
         localStorage.removeItem('meditation_user_name');
         localStorage.removeItem('meditation_currPos');
-
         if (error) console.error('Lỗi khi đăng xuất:', error);
-    };
+    }, []);
 
     useEffect(() => {
-        let isMounted = true; // Flag để kiểm tra component đã unmount chưa
+        let isMounted = true;
 
-        const handleSession = async (session) => {
+        const handleAuthChange = async (event, session) => {
             if (!isMounted) return;
-            
-            if (session && session.user) {
-                const currentUserId = session.user.id;
-                // console.log('session', session)
-                localStorage.setItem('meditation_anonymous_user_id', currentUserId);
-                // Người dùng đã xác thực (bao gồm cả đăng nhập ẩn danh ban đầu)
-                if (session.user.is_anonymous) {
-                    setAuthState(currentUserId, 'anon', 'Anonymous');
-                } else {
-                    // Người dùng đã đăng ký
-                    const profileRole = await fetchUserProfileAndRole(currentUserId);
-                    // console.log('profileData', profileRole);
-                    setAuthState(currentUserId, profileRole, session.user.user_metadata?.name);
+
+            if (session?.user) {
+                const user = session.user;
+                localStorage.setItem('meditation_anonymous_user_id', user.id);
+
+                let role = 'anon';
+                let name = user.user_metadata?.name || 'Anonymous';
+
+                if (!user.is_anonymous) {
+                    role = await fetchUserProfileAndRole(user.id);
                 }
 
+                setAuthState({
+                    userId: user.id,
+                    userRole: role,
+                    username: name,
+                    isLoading: false
+                });
             } else {
-                // KHÔNG CÓ SESSION -> Xử lý Đăng nhập Ẩn danh/Đăng xuất hoàn toàn
-                
-                // Trường hợp 1: Mới tải (INITIAL_SESSION) HOẶC user vừa SIGNED_OUT
+                // Chỉ tự động sign in ẩn danh nếu thực sự không có session
+                // Tránh loop nếu signInAnonymously đang chạy
                 try {
                     const { data } = await supabase.auth.signInAnonymously();
-                    
-                    if (data?.user) {
-                        // Đăng nhập ẩn danh thành công, set state lần 2 (SIGNED_IN)
-                        setAuthState(data.user.id, 'anon', 'Anonymous');
-                    } else {
-                        // Không có user (ví dụ: lỗi server)
-                        setAuthState(null, 'anon', 'Anonymous');
+                    if (!data?.user) {
+                        setAuthState(prev => ({ ...prev, isLoading: false, userRole: 'anon' }));
                     }
                 } catch (e) {
-                    console.error("Lỗi đăng nhập ẩn danh", e);
-                    setAuthState(null, 'anon', 'Anonymous');
+                    setAuthState(prev => ({ ...prev, isLoading: false }));
                 }
             }
         };
 
-        // Lắng nghe thay đổi trạng thái Auth: Đây là nguồn chân lý duy nhất.
-        // Sẽ kích hoạt lần 1 với INITIAL_SESSION (có hoặc không có session)
         const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
-            console.log(`Auth Event changed: ${event}`); // Kiểm tra event: INITIAL_SESSION, SIGNED_IN, SIGNED_OUT
-            
-            // Tránh gọi handleSession nếu session.user đã là null và event là SIGNED_OUT.
-            // Chúng ta xử lý logic anon trong khối else của handleSession
-            handleSession(session);
+            console.log(`Auth Event changed: ${event}`); 
+            handleAuthChange(event, session);
         });
 
         return () => {
-            isMounted = false; // Cleanup
+            isMounted = false;
             authListener?.subscription?.unsubscribe();
         };
-    }, []); // Chỉ chạy 1 lần khi mount
+    }, []);
 
-    const userInfo = {
-        userId,
-        userRole,
-        username,
-        isLoading, // Thêm trạng thái loading
-    };
+    // QUAN TRỌNG NHẤT: Memoize cái value của Context
+    // Chỉ tính toán lại khi authState thay đổi (logout là hàm tĩnh nhờ useCallback nên ko cần lo)
+    const contextValue = useMemo(() => ({
+        userInfo: authState,
+        logout
+    }), [authState, logout]);
 
     return (
-        <AuthContext.Provider value={{ userInfo, logout }}>
-        {/* Chỉ hiển thị children khi đã load xong trạng thái Auth */}
-        {isLoading ? (
-            <div className='loading-page'>
-                <div className='loading-page-text'>{t("common.loading")}</div>
-                <div class="holder">
-                    <div class="candle">
-                        <div class="blinking-glow"></div>
-                        <div class="thread"></div>
-                        <div class="glow"></div>
-                        <div class="flame"></div>
+        <AuthContext.Provider value={contextValue}>
+            {authState.isLoading ? (
+                <div className='loading-page'>
+                    <div className='loading-page-text'>{t("common.loading")}</div>
+                    <div className="holder">
+                        <div className="candle">
+                            <div className="blinking-glow"></div>
+                            <div className="thread"></div>
+                            <div className="glow"></div>
+                            <div className="flame"></div>
+                        </div>
                     </div>
                 </div>
-                
-            </div>
-        ) : children}
+            ) : children}
         </AuthContext.Provider>
     );
 };
 
-// 3. Tạo Custom Hook để sử dụng Context dễ dàng hơn
 export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (context === undefined) {
-    throw new Error('useAuth must be used within a AuthProvider');
-  }
-  return context;
+    const context = useContext(AuthContext);
+    if (!context) throw new Error('useAuth must be used within an AuthProvider');
+    return context;
 };

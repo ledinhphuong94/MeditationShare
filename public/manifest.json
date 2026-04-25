@@ -2,7 +2,7 @@
   "id": "/",
   "short_name": "Light Map",
   "name": "Bản Đồ Ánh Sáng",
-  "description": "Bản đồ nến ánh sáng",
+  "description": "Hãy chia sẽ thông điệp đến thế giới",
   "icons": [
     {
       "src": "/logo192.png",
@@ -21,9 +21,8 @@
   "scope": "/",
   "display": "standalone",
   "theme_color": "#1a1a1a",
-  "background_color": "#0f0f0f",
+  "background_color": "#1a1a1a",
   "orientation": "portrait",
-
   "screenshots": [
     {
       "src": "/screenshot-desktop.png",
