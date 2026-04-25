@@ -11,6 +11,7 @@ import { useTranslation } from "react-i18next";
 import { UsersProvider } from '../../context/UsersContext.js';
 import SidebarContent from "../../component/SidebarContent/SidebarContent";
 import bg from "../../img/sunrise.jpg";
+import { usePushNotification } from '../../hooks/usePushNotification'
 // import InstallPWA from "../../component/InstallPWA/InstallPWA.jsx"
 
 const { Content, Sider } = Layout;
@@ -41,6 +42,7 @@ function Dashboard() {
     const loadingMoreRef = useRef(false);
     const hasMoreRef = useRef(true);
     const pageRef = useRef(0);
+    usePushNotification(userId)
 
     const PAGE_SIZE = 75;
     const fetchMarkers = useCallback( async (pageIndex = 0) => {
@@ -117,7 +119,7 @@ function Dashboard() {
     // Realtime logic
     useEffect(() => {
         const channel = supabase.channel("realtime-dashboard")
-            .on("postgres_changes", { event: "*", schema: "public", table: "markers" }, (payload) => {
+            .on("postgres_changes", { event: "*", schema: "public", table: "markers" }, async (payload) => {
                 const isMe = payload.new.user_id === userId;
                 // setIsMyInsert(isMe);
                 if (payload.eventType === "INSERT") {
@@ -128,6 +130,18 @@ function Dashboard() {
                     audioRef.current.play().catch(() => {}); // Silent catch for autoplay block
                     fetchStats();
                     notification.success({ message: t("dashboard.new_candle_lit") });
+
+                    // ✅ Thêm vào đây — không gửi cho chính mình
+                    if (!isMe) {
+                        await supabase.functions.invoke('send-push', {
+                            body: {
+                                user_id: userId, // gửi cho user hiện tại
+                                title: '🕯️ Nến mới được thắp',
+                                body: `${payload.new.name}: ${payload.new.message?.slice(0, 80) || ''}`,
+                                url: '/',
+                            }
+                        })
+                    }
                 } 
                 else if (payload.eventType === "UPDATE") {
                     setMarkers((prev) => prev.map((i) => i.id === payload.new.id ? payload.new : i));
