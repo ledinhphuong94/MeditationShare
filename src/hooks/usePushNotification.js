@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { initializeApp } from 'firebase/app'
 import { getMessaging, getToken, onMessage } from 'firebase/messaging'
 import { supabase } from '../supabaseClient'
+import { notification } from 'antd'
 
 const firebaseConfig = {
     apiKey: "AIzaSyDRhby3K9aWbOQHvt670hq64l23a_UZWHw",
@@ -17,6 +18,16 @@ const VAPID_KEY = "BOHWVrKG_otnlYqyNs3-M_Df7jimZGDHJ4NSDAoxXvtoIfeoUKD4INTcSarWJ
 const app = initializeApp(firebaseConfig)
 const messaging = getMessaging(app)
 
+// ✅ Lấy hoặc tạo device_id cố định cho thiết bị này
+const getDeviceId = () => {
+    let deviceId = localStorage.getItem('push_device_id')
+    if (!deviceId) {
+        deviceId = crypto.randomUUID()
+        localStorage.setItem('push_device_id', deviceId)
+    }
+    return deviceId
+}
+
 export const usePushNotification = (userId) => {
     useEffect(() => {
         if (!userId) return
@@ -31,20 +42,29 @@ export const usePushNotification = (userId) => {
             const token = await getToken(messaging, { vapidKey: VAPID_KEY })
             if (!token) return
 
-            // ✅ Mỗi user chỉ lưu 1 token mới nhất
+            const deviceId = getDeviceId()
+
+            // ✅ Upsert theo device_id — mỗi thiết bị 1 token, nhiều thiết bị per user
             await supabase.from('push_tokens').upsert({
                 user_id: userId,
                 token,
+                device_id: deviceId,
                 updated_at: new Date().toISOString(),
-            }, { onConflict: 'user_id' })
+            }, { onConflict: 'device_id' })
 
         } catch (err) {
             console.error('Push registration error:', err)
         }
     }
 
+    // ✅ Hiện notification khi app đang mở
     onMessage(messaging, (payload) => {
-        // App đang mở → có thể show Antd notification thay thế
-        console.log('Foreground message:', payload)
+        notification.open({
+            message: payload.notification?.title,
+            description: payload.notification?.body,
+            icon: '🕯️',
+            placement: 'topRight',
+            duration: 4,
+        })
     })
 }

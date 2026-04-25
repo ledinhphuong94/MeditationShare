@@ -98,14 +98,14 @@ serve(async (req) => {
             .eq('user_id', user_id)
 
         if (error || !tokens?.length) {
-            return new Response('No tokens found', { status: 404 })
+            return new Response('No tokens found', { status: 404, headers: corsHeaders })
         }
 
         const serviceAccount = JSON.parse(Deno.env.get('FIREBASE_SERVICE_ACCOUNT')!)
         const accessToken = await getAccessToken(serviceAccount)
         const projectId = serviceAccount.project_id
 
-        // Gửi đến tất cả thiết bị
+        // Gửi đến từng thiết bị
         const results = await Promise.all(tokens.map(({ token }) =>
             fetch(`https://fcm.googleapis.com/v1/projects/${projectId}/messages:send`, {
                 method: 'POST',
