@@ -70,7 +70,7 @@ export const AuthProvider = ({ children }) => {
         };
 
         const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
-            console.log(`Auth Event changed: ${event}`); 
+            // console.log(`Auth Event changed: ${event}`); 
             handleAuthChange(event, session);
         });
 

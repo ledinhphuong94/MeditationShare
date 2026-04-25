@@ -4,8 +4,7 @@ import { useAuth } from '../context/AuthContext.js';
 import Admin from "../pages/Admin/Admin.jsx";
 
 const AdminRoute = () => {
-    const { userRole } = useAuth();
-
+    const { userInfo: {userRole} } = useAuth();
     // Dùng cho trường hợp Auth đang tải
     if (userRole === 'loading') {
         return <div className="loading-screen">Đang kiểm tra quyền...</div>;

@@ -40,7 +40,6 @@ const MapTilerVectorLayer = ({ lang }) => {
         if (mapTilerInstance) {
             mapTilerInstance.on('load', () => {
                 setIsMapTilerLoaded(true); // Cập nhật state khi bản đồ tải xong
-                console.log("MapTiler instance loaded successfully.");
             });
         }
 

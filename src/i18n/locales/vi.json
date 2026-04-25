@@ -85,7 +85,8 @@
         "edit_message": "Sửa thông điệp",
         "update": "Cập nhật",
         "enter_your_name": "Vui lòng nhập tên",
-        "load_all_mess":"Đã tải hết tin nhắn"
+        "load_all_mess":"Đã tải hết tin nhắn",
+        "new_mess": "💬 Tin nhắn mới"
     },
     "userCardList": {
         "Candle": "Nến",

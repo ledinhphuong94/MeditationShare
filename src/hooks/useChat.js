@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { supabase } from '../supabaseClient'
-
+import { useTranslation } from "react-i18next";
 const PAGE_SIZE = 20;
 
 export const useChat = (currentUserId, targetUserId) => {
@@ -10,6 +10,7 @@ export const useChat = (currentUserId, targetUserId) => {
     const [hasMore, setHasMore] = useState(true)
     const channelRef = useRef(null)
     const oldestCreatedAtRef = useRef(null) // track tin cũ nhất đang có
+    const { t } = useTranslation();
 
     useEffect(() => {
         if (!currentUserId || !targetUserId) return
@@ -121,7 +122,7 @@ export const useChat = (currentUserId, targetUserId) => {
             supabase.functions.invoke('send-push', {
                 body: {
                     user_id: targetUserId,
-                    title: '💬 Tin nhắn mới',
+                    title: t('messageModal.new_mess'),
                     body: content.trim().slice(0, 100),
                     url: '/',
                 }

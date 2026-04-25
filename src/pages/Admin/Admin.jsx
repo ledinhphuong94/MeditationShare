@@ -1,13 +1,13 @@
 import './Admin.css';
-import React, { useState, useEffect } from 'react';
-import { GiPositionMarker } from "react-icons/gi";
+// import React, { useState, useEffect } from 'react';
+// import { GiPositionMarker } from "react-icons/gi";
 
 
 const Admin = () => {
-    console.log('Admin Page')
+    // console.log('Admin Page')
     return (
         <>
-            Admin Page
+            <p style={{color: "#fff"}}>Admin Page comming soon</p>
         </>
 
   );

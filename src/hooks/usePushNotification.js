@@ -30,7 +30,6 @@ const messaging = getMessaging(app)
 
 export const usePushNotification = (userId, userRole) => {
     useEffect(() => {
-        console.log('usePushNotification userRole', userRole)
         // ✅ Chỉ đăng ký nếu đã login (không phải anon)
         if (!userId || userRole === 'anon') return
         registerPush(userId)
@@ -57,40 +56,22 @@ export const usePushNotification = (userId, userRole) => {
         }
     }
 
-    // ✅ Xóa token khi logout
-    // const unregisterPush = async (userId) => {
-    //     console.log('>>> unregisterPush', userId)
-    //     try {
-    //         const token = await getToken(messaging, { vapidKey: VAPID_KEY })
-    //         if (!token) return
-
-    //         await supabase
-    //             .from('push_tokens')
-    //             .delete()
-    //             .eq('user_id', userId)
-    //             .eq('token', token)
-    //     } catch (err) {
-    //         console.error('Unregister push error:', err)
-    //     }
-    // }
-
     // ✅ Hiện notification khi app đang mở
     onMessage(messaging, (payload) => {
-        console.log('>>> payload', payload)
         notification.open({
             message: (
-                <span style={{ fontWeight: 700, fontSize: 14 }}>
+                <span style={{ fontWeight: 700, fontSize: 14, color: '#fff' }}>
                     {payload.data?.title}
                 </span>
             ),
             description: (
-                <span style={{ color: '#aaa', fontSize: 13 }}>
+                <span style={{ color: '#ccc', fontSize: 13 }}>
                     {payload.data?.body}
                 </span>
             ),
             icon: (
                 <div style={{
-                    width: 36, height: 36, borderRadius: 8,
+                    width: 30, height: 30, borderRadius: 8,
                     background: 'linear-gradient(135deg, #facc15, #f59e0b)',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                     fontSize: 18,
@@ -101,8 +82,8 @@ export const usePushNotification = (userId, userRole) => {
             placement: 'topRight',
             duration: 4,
             style: {
-                background: '#1a1a1a',
-                border: '1px solid #2a2a2a',
+                background: '#1e1e2e',
+                // border: '1px solid rgba(250,204,21,0.3)',
                 borderRadius: 12,
                 boxShadow: '0 8px 32px rgba(0,0,0,0.5)',
             },

@@ -24,7 +24,6 @@ const MyLocationButton = ({ mapRef, handleClickOnMap }) => {
     }, [mapRef]);
 
     const handleFlyToMe = () => {
-        console.log("Clicked My Location Button", myLocation);
         if (!myLocation?.lat || !myLocation?.lng) {
             message.error(t("alert.location_unavailable"));
             return;

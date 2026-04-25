@@ -85,7 +85,8 @@
         "edit_message": "Edit Message",
         "update": "Update",
         "enter_your_name": "Enter your name",
-        "load_all_mess":"Loaded all messages"
+        "load_all_mess":"Loaded all messages",
+        "new_mess": "💬 New message"
     },
 
     "userCardList": {
