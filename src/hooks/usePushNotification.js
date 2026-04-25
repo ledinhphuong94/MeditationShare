@@ -19,27 +19,21 @@ const app = initializeApp(firebaseConfig)
 const messaging = getMessaging(app)
 
 // ✅ Lấy hoặc tạo device_id cố định cho thiết bị này
-const getDeviceId = () => {
-    let deviceId = localStorage.getItem('push_device_id')
-    if (!deviceId) {
-        deviceId = crypto.randomUUID()
-        localStorage.setItem('push_device_id', deviceId)
-    }
-    return deviceId
-}
+// const getDeviceId = () => {
+//     let deviceId = localStorage.getItem('push_device_id')
+//     if (!deviceId) {
+//         deviceId = crypto.randomUUID()
+//         localStorage.setItem('push_device_id', deviceId)
+//     }
+//     return deviceId
+// }
 
 export const usePushNotification = (userId, userRole) => {
     useEffect(() => {
+        console.log('usePushNotification userRole', userRole)
         // ✅ Chỉ đăng ký nếu đã login (không phải anon)
         if (!userId || userRole === 'anon') return
         registerPush(userId)
-
-        // ✅ Cleanup khi unmount hoặc logout
-        return () => {
-            if (userId && userRole !== 'anon') {
-                unregisterPush(userId)
-            }
-        }
     }, [userId, userRole])
 
     
@@ -64,52 +58,56 @@ export const usePushNotification = (userId, userRole) => {
     }
 
     // ✅ Xóa token khi logout
-    const unregisterPush = async (userId) => {
-        try {
-            const token = await getToken(messaging, { vapidKey: VAPID_KEY })
-            if (!token) return
+    // const unregisterPush = async (userId) => {
+    //     console.log('>>> unregisterPush', userId)
+    //     try {
+    //         const token = await getToken(messaging, { vapidKey: VAPID_KEY })
+    //         if (!token) return
 
-            await supabase
-                .from('push_tokens')
-                .delete()
-                .eq('user_id', userId)
-                .eq('token', token)
-        } catch (err) {
-            console.error('Unregister push error:', err)
-        }
-    }
+    //         await supabase
+    //             .from('push_tokens')
+    //             .delete()
+    //             .eq('user_id', userId)
+    //             .eq('token', token)
+    //     } catch (err) {
+    //         console.error('Unregister push error:', err)
+    //     }
+    // }
 
     // ✅ Hiện notification khi app đang mở
     onMessage(messaging, (payload) => {
+        console.log('>>> payload', payload)
         notification.open({
             message: (
-                <div style={{ fontWeight: 500, fontSize: 14 }}>
-                    {payload.notification?.title}
-                </div>
-            ),
-            description: (
-                <div style={{ fontSize: 13, color: '#666', lineHeight: 1.5 }}>
-                    {payload.notification?.body}
-                </div>
-            ),
-            icon: (
-                <span style={{
-                    fontSize: 18,
-                    display: 'flex',
-                    alignItems: 'center'
-                }}>
-                    🕯️
+                <span style={{ fontWeight: 700, fontSize: 14 }}>
+                    {payload.data?.title}
                 </span>
             ),
+            description: (
+                <span style={{ color: '#aaa', fontSize: 13 }}>
+                    {payload.data?.body}
+                </span>
+            ),
+            icon: (
+                <div style={{
+                    width: 36, height: 36, borderRadius: 8,
+                    background: 'linear-gradient(135deg, #facc15, #f59e0b)',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    fontSize: 18,
+                }}>
+                    🕯️
+                </div>
+            ),
             placement: 'topRight',
-            duration: 3,
+            duration: 4,
             style: {
+                background: '#1a1a1a',
+                border: '1px solid #2a2a2a',
                 borderRadius: 12,
-                padding: '12px 16px',
-                boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-                width: 320
+                boxShadow: '0 8px 32px rgba(0,0,0,0.5)',
             },
-            className: 'custom-notification'
-        });
+        })
     })
 }
+
+export { messaging, VAPID_KEY }

@@ -24,6 +24,8 @@ import {
   CrownOutlined,
   DownOutlined,
 } from '@ant-design/icons';
+import { getToken } from 'firebase/messaging'
+import { messaging, VAPID_KEY } from '../../hooks/usePushNotification.js'
 
 const { Text } = Typography;
 
@@ -123,6 +125,16 @@ function AuthButtons() {
 
     /* ── Logout ── */
     const handleLogout = async () => {
+        // ✅ Xóa push token trước
+        try {
+            const token = await getToken(messaging, { vapidKey: VAPID_KEY })
+            if (token) {
+                await supabase.from('push_tokens').delete().eq('token', token)
+            }
+        } catch (err) {
+            console.error('Remove push token error:', err)
+        }
+
         const { error } = await supabase.auth.signOut();
         if (error) {
         console.error('Lỗi khi đăng xuất:', error);

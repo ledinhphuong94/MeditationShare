@@ -114,25 +114,46 @@ serve(async (req) => {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
+                    // message: {
+                    //     token,
+                    //     notification: { title, body },
+                    //     data: { url: url || '/' },
+                    //     webpush: {
+                    //         notification: {
+                    //             icon: '/logo192.png',
+                    //             badge: '/logo192.png',
+                    //         }
+                    //     }
+                    // }
                     message: {
                         token,
-                        notification: { title, body },
-                        data: { url: url || '/' },
+                        // ❌ Bỏ notification field
+                        // notification: { title, body },
+                        
+                        // ✅ Chỉ dùng data
+                        data: { 
+                            title,  // truyền title qua data
+                            body,   // truyền body qua data
+                            url: url || '/',
+                        },
                         webpush: {
-                            notification: {
-                                icon: '/logo192.png',
-                                badge: '/logo192.png',
-                            }
+                            // ✅ Hiện notification thủ công trong SW
+                            headers: { Urgency: 'high' },
                         }
                     }
                 }),
             }).then(r => r.json())
         ))
 
-        // ✅ Thêm vào đây — xóa token invalid
+        // ✅ Xóa token invalid — fix index bug
         const invalidTokens = results
-            .filter(r => r.error?.code === 404 || r.error?.status === 'NOT_FOUND')
-            .map((r, i) => tokens[i].token)
+            .map((r, i) => ({ result: r, token: tokens[i].token }))
+            .filter(({ result }) =>
+                result.error?.code === 404 ||
+                result.error?.status === 'NOT_FOUND' ||
+                result.error?.details?.[0]?.errorCode === 'UNREGISTERED'
+            )
+            .map(({ token }) => token)
 
         if (invalidTokens.length > 0) {
             await supabase

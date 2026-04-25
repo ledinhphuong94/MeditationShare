@@ -14,12 +14,20 @@ const messaging = firebase.messaging()
 
 // Nhận notification khi app đang background/đóng
 messaging.onBackgroundMessage((payload) => {
-    const { title, body } = payload.notification
-    self.registration.showNotification(title, {
-        body,
-        icon: '/logo192.png',
-        badge: '/logo192.png',
-        data: { url: payload.data?.url || '/' },
+    return self.clients.matchAll({ type: 'window' }).then(clients => {
+        const isFocused = clients.some(client => client.focused)
+        if (isFocused) return
+
+        // ✅ Đọc từ data thay vì notification
+        const title = payload.data?.title || 'Bản Đồ Ánh Sáng'
+        const body = payload.data?.body || ''
+
+        return self.registration.showNotification(title, {
+            body,
+            icon: '/logo192.png',
+            badge: '/logo192.png',
+            data: { url: payload.data?.url || '/' },
+        })
     })
 })
 
