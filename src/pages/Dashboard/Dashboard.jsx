@@ -245,7 +245,7 @@ function Dashboard() {
                     />
 
                     <div className="map-footer">
-                        © 2026 {t("dashboard.light_map")} | v2.2
+                        © 2026 {t("dashboard.light_map")} | v2.2.1
                     </div>
 
                     {/* 👉 BUTTON mở drawer (mobile) */}

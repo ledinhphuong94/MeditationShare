@@ -215,7 +215,7 @@ function AuthButtons() {
                 menu={{ items: dropdownItems }}
                 trigger={['click']}
                 placement="bottomRight"
-                overlayStyle={{ minWidth: 220, zIndex: 1100 }}
+                overlayStyle={{ minWidth: 220, zIndex: 9996 }}
             >
                 <div
                     style={{
