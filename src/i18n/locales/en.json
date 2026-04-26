@@ -113,7 +113,7 @@
     },
 
     "installApp": {
-        "install_app_more_convenient": "Add to homescreen for more convenience",
+        "install_app_more_convenient": "Add to homescreen",
         "install_app": "Add to homescreen",
         "select_share": "Press the Share button",
         "select_share_desc": "Located in the Safari toolbar at the bottom of the screen",

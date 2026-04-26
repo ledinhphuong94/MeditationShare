@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" style="background: #000000;"">
   <head>
     <meta charset="utf-8" />
     <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
@@ -15,7 +15,12 @@
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playwrite+CZ:wght@100..400&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Playwrite+CZ:wght@100..400&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript>
+        <link href="https://fonts.googleapis.com/css2?family=Playwrite+CZ:wght@100..400&display=swap" rel="stylesheet">
+    </noscript>
     <title>Bản đồ ánh sáng | Light Map</title>
     <style>
         body { 
@@ -31,7 +36,7 @@
             padding: 0;
             box-sizing: border-box;
             scroll-behavior: smooth;
-            font-family: "Pacifico", cursive;
+            font-family: "Pacifico", cursive, serif;
             color: #6e6e6e;
             font-size: 1.6rem;
             background: black;

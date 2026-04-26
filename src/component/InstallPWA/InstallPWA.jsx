@@ -18,8 +18,8 @@ export default function InstallPWA() {
             window.navigator.standalone
 
         if (isInstalled) return
-
-        const isDismissed = localStorage.getItem('pwa_banner_dismissed') === 'true'
+        const dismissedAt = localStorage.getItem('pwa_banner_dismissed')
+        const isDismissed = dismissedAt && (Date.now() - parseInt(dismissedAt)) < 7 * 24 * 60 * 60 * 1000
         if (isDismissed) return
 
         const iosDevice = /iphone|ipad|ipod/i.test(navigator.userAgent)
@@ -72,7 +72,15 @@ export default function InstallPWA() {
 
     const handleCloseBanner = () => {
         setShowBanner(false)
-        localStorage.setItem('pwa_banner_dismissed', 'true')
+        
+        const dismissCount = parseInt(localStorage.getItem('pwa_dismiss_count') || '0') + 1
+        localStorage.setItem('pwa_dismiss_count', dismissCount.toString())
+
+        if (dismissCount >= 3) {
+            // ✅ Quá 3 lần → lưu timestamp, ẩn 7 ngày
+            localStorage.setItem('pwa_banner_dismissed', Date.now().toString())
+            localStorage.removeItem('pwa_dismiss_count') // reset count
+        }
     }
 
     if (!showBanner) return null
