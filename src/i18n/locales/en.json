@@ -113,8 +113,8 @@
     },
 
     "installApp": {
-        "install_app_more_convenient": "Install app for more convenience",
-        "install_app": "Install app",
+        "install_app_more_convenient": "Add to homescreen for more convenience",
+        "install_app": "Add to homescreen",
         "select_share": "Press the Share button",
         "select_share_desc": "Located in the Safari toolbar at the bottom of the screen",
         "select_add_to_main_screen": "Select \"Add to Home Screen\"",
@@ -128,6 +128,17 @@
         "feature_only_work_on_browser":"This feature only works on the browser",
         "add":"Add",
         "install_light_map":"Install Light Map",
-        "only_tree_steps":"Only 3 simple steps"
+        "only_tree_steps":"Only 3 simple steps",
+        "step1_title": "Open browser menu",
+        "step1_desc": "Tap the three-dot icon at the top right corner.",
+        "step2_title": "Add to Home screen",
+        "step2_desc": "Find and select \"Add to Home screen\".",
+        "step3_title": "Confirm Installation",
+        "step3_desc": "Tap \"Add\" to place it on your home screen.",
+        "menu_translate": "Translate...",
+        "menu_add_to_home": "Add to Home screen",
+        "menu_settings": "Settings",
+        "action_cancel": "Cancel",
+        "action_add": "Add"
     }
 }

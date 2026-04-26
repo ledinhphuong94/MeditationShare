@@ -46,6 +46,7 @@ function MessageModal({ isOpen, formData, onClose, onSubmit }) {
             centered
             destroyOnHidden
             title={formData?.id ? t("messageModal.edit_message") : t("messageModal.message_to_the_world")}
+            zIndex={9995}
         >
         <Form form={form} layout="vertical" onFinish={handleFinish}>
             <Form.Item

@@ -12,7 +12,7 @@ import { UsersProvider } from '../../context/UsersContext.js';
 import SidebarContent from "../../component/SidebarContent/SidebarContent";
 import bg from "../../img/sunrise.jpg";
 import { usePushNotification } from '../../hooks/usePushNotification'
-// import InstallPWA from "../../component/InstallPWA/InstallPWA.jsx"
+import InstallPWA from "../../component/InstallPWA/InstallPWA.jsx"
 
 const { Content, Sider } = Layout;
 function Dashboard() {
@@ -44,26 +44,35 @@ function Dashboard() {
     const pageRef = useRef(0);
     usePushNotification(userId, userRole)
 
-    const PAGE_SIZE = 75;
-    const fetchMarkers = useCallback( async (pageIndex = 0) => {
-        const from = pageIndex * PAGE_SIZE;
-        const to = from + PAGE_SIZE - 1;
+    const PAGE_SIZE = 50;
+    const fetchMarkers = useCallback(async (pageIndex = 0) => {
+        try {
+            loadingMoreRef.current = true; // Set ở đây cho chắc
+            const from = pageIndex * PAGE_SIZE;
+            const to = from + PAGE_SIZE - 1;
 
-        const { data, count, error } = await supabase
-            .from("markers")
-            .select("*", { count: "exact", head: false })
-            .order("updated_at", { ascending: false })
-            .range(from, to);
-        if (error) return;
+            const { data, count, error } = await supabase
+                .from("markers")
+                .select("*", { count: "exact", head: false })
+                .order("updated_at", { ascending: false })
+                .range(from, to);
 
-        const totalLoaded = from + data.length;
-        if (totalLoaded >= count) {
-            // setHasMore(false);
-            hasMoreRef.current = false
+            if (error) throw error;
+
+            if (from + data.length >= count) {
+                hasMoreRef.current = false;
+            }
+
+            setMarkers((prev) => {
+                const newData = pageIndex === 0 ? data : [...prev, ...data];
+                // Khử trùng ID để an toàn khi kết hợp Realtime
+                return Array.from(new Map(newData.map(item => [item.id, item])).values());
+            });
+        } catch (err) {
+            console.error(err);
+        } finally {
+            loadingMoreRef.current = false;
         }
-        setMarkers((prev) =>
-            pageIndex === 0 ? data : [...prev, ...data]
-        );
     }, []);
 
     const loadMore = useCallback(async () => {
@@ -97,7 +106,7 @@ function Dashboard() {
     // Hiệu ứng hào quang khi có nến mới
     const handleGlowingEffect = useCallback(() => {
         setIsEffectActive(true);
-        setTimeout(() => setIsEffectActive(false), 4000);
+        setTimeout(() => setIsEffectActive(false), 3000);
     }, []);
 
    // Thống kê users
@@ -120,7 +129,7 @@ function Dashboard() {
     useEffect(() => {
         const channel = supabase.channel("realtime-dashboard")
             .on("postgres_changes", { event: "*", schema: "public", table: "markers" }, async (payload) => {
-                const isMe = payload.new.user_id === userId;
+                // const isMe = payload.new.user_id === userId;
                 // setIsMyInsert(isMe);
                 if (payload.eventType === "INSERT") {
                     setMarkers((prev) => [payload.new, ...prev]);
@@ -181,6 +190,7 @@ function Dashboard() {
             okText: t("common.delete"),
             okType: 'danger',
             cancelText: t("common.cancel"),
+            zIndex: 9993,
             onOk: async () => {
                 const { error } = await supabase.rpc('delete_marker_by_id', { marker_id_to_delete: item.id });
                 if (error) message.error(t("dashboard.error_when_remove"));
@@ -235,7 +245,7 @@ function Dashboard() {
                     />
 
                     <div className="map-footer">
-                        © 2026 {t("dashboard.light_map")} | v2.0
+                        © 2026 {t("dashboard.light_map")} | v2.2
                     </div>
 
                     {/* 👉 BUTTON mở drawer (mobile) */}
@@ -279,8 +289,9 @@ function Dashboard() {
                     <>
                     <Drawer
                         placement="bottom"   // 🔥 QUAN TRỌNG
-                        height="80%"         // giống app thật
+                        height="100%"         // giống app thật
                         open={openDrawer}
+                        zIndex={9992}
                         onClose={() => setOpenDrawer(false)}
                         destroyOnClose={false}
                         bodyStyle={{ padding: 0 }}
@@ -323,7 +334,7 @@ function Dashboard() {
                         />
                         
                     </Drawer>
-                    {/* <InstallPWA /> */}
+                    <InstallPWA />
                     </>
                 )}
         
@@ -334,7 +345,7 @@ function Dashboard() {
                 onSubmit={handleSubmitModal}
             />
 
-            <PromoPopup />
+            <PromoPopup isMobile={isMobile} />
         </Layout>
     </UsersProvider>
 }

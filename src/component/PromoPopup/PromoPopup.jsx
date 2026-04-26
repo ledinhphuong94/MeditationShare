@@ -3,21 +3,19 @@ import { Badge, Card, FloatButton, Button } from "antd";
 import { BellOutlined, CloseOutlined } from "@ant-design/icons";
 import bannerImg from "../../img/promo_banner.jpg";
 
-const PromoPopup = () => {
+const PromoPopup = ({isMobile}) => {
     const [open, setOpen] = useState(false);
     const [minimized, setMinimized] = useState(false);
 
     useEffect(() => {
         const seen = localStorage.getItem("promo_seen");
-
         if (seen) {
             setMinimized(true);
             return;
         }
-
-        const timer = setTimeout(() => {
+        const timer = setTimeout(() => {   
             setOpen(true);
-        }, 2000);
+        }, 3000);
 
         return () => clearTimeout(timer);
     }, []);
@@ -35,9 +33,21 @@ const PromoPopup = () => {
                 <div
                     style={{
                         position: "fixed",
-                        bottom: 90,
-                        left: 20,
                         zIndex: 9999,
+
+                        // 👉 Desktop
+                        ...(isMobile
+                            ? {
+                                top: "50%",
+                                left: "50%",
+                                transform: "translate(-50%, -50%)",
+                                maxWidth: 360,
+                            }
+                            : {
+                                bottom: 90,
+                                left: 20,
+                                width: 300,
+                            }),
                     }}
                 >
                     <Card

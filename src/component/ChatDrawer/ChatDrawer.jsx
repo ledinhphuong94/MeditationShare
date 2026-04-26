@@ -141,7 +141,7 @@ const ChatDrawer = ({ open, onClose, currentUser, targetUser }) => {
                     <span style={{ color: '#f5f5f5' }}>{targetUser?.name}</span>
                 </div>
             }
-            zIndex={9999}
+            zIndex={9994}
             styles={{
                 body: {
                     display: 'flex', flexDirection: 'column',

@@ -127,6 +127,17 @@
         "feature_only_work_on_browser":"Tính năng này chỉ hoạt động trên trình duyệt",
         "add":"Thêm",
         "install_light_map":"Cài Bản Đồ Ánh Sáng",
-        "only_tree_steps":"Chỉ 3 bước đơn giản"
+        "only_tree_steps":"Chỉ 3 bước đơn giản",
+        "step1_title": "Mở menu trình duyệt",
+        "step1_desc": "Nhấn vào biểu tượng 3 chấm ở góc phải màn hình.",
+        "step2_title": "Chọn Thêm vào màn hình",
+        "step2_desc": "Tìm và chọn mục \"Thêm vào màn hình chính\".",
+        "step3_title": "Xác nhận Thêm",
+        "step3_desc": "Nhấn \"Thêm\" để đưa ứng dụng ra màn hình chính.",
+        "menu_translate": "Dịch...",
+        "menu_add_to_home": "Thêm vào màn hình chính",
+        "menu_settings": "Cài đặt",
+        "action_cancel": "Hủy",
+        "action_add": "Thêm"
     }
 }
