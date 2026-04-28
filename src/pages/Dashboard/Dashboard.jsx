@@ -5,14 +5,14 @@ import { supabase } from "../../supabaseClient.js";
 import MessageModal from '../../component/MessageModal/MessageModal.jsx';
 import PromoPopup from '../../component/PromoPopup/PromoPopup.jsx';
 import Mapty from '../../component/Mapty/Mapty.jsx';
-import bellSound from "../../sound/bell2.mp3";
 import { useAuth } from '../../context/AuthContext.js';
 import { useTranslation } from "react-i18next";
 import { UsersProvider } from '../../context/UsersContext.js';
 import SidebarContent from "../../component/SidebarContent/SidebarContent";
 import bg from "../../img/sunrise.jpg";
 import { usePushNotification } from '../../hooks/usePushNotification'
-import InstallPWA from "../../component/InstallPWA/InstallPWA.jsx"
+// import InstallPWA from "../../component/InstallPWA/InstallPWA.jsx"
+import { playSystemSound } from '../../utils/soundUtils.js';
 
 const { Content, Sider } = Layout;
 function Dashboard() {
@@ -32,7 +32,6 @@ function Dashboard() {
     const [activeTab, setActiveTab] = useState('candles');
     const [activeUserId, setActiveUserId] = useState(null);
     const [chatTarget, setChatTarget] = useState(null)
-    const audioRef = useRef(new Audio(bellSound));
     const getIsMobile = () => window.innerWidth < 768;
     const [isMobile, setIsMobile] = useState(getIsMobile);
     const [openDrawer, setOpenDrawer] = useState(true);
@@ -135,28 +134,14 @@ function Dashboard() {
                     setMarkers((prev) => [payload.new, ...prev]);
                     // setActiveId(payload.new.id);
                     handleGlowingEffect();
-                    audioRef.current.currentTime = 0;
-                    audioRef.current.play().catch(() => {}); // Silent catch for autoplay block
+                    playSystemSound('bell');
                     fetchStats();
                     notification.success({ message: t("dashboard.new_candle_lit") });
-
-                    // ✅ Thêm vào đây — không gửi cho chính mình
-                    // if (!isMe) {
-                    //     await supabase.functions.invoke('send-push', {
-                    //         body: {
-                    //             user_id: userId, // gửi cho user hiện tại
-                    //             title: '🕯️ Nến mới được thắp',
-                    //             body: `${payload.new.name}: ${payload.new.message?.slice(0, 80) || ''}`,
-                    //             url: '/',
-                    //         }
-                    //     })
-                    // }
                 } 
                 else if (payload.eventType === "UPDATE") {
                     setMarkers((prev) => prev.map((i) => i.id === payload.new.id ? payload.new : i));
                     handleGlowingEffect();
-                    audioRef.current.currentTime = 0;
-                    audioRef.current.play().catch(() => {}); //
+                    playSystemSound('noti');
                 } 
                 else if (payload.eventType === "DELETE") {
                     setMarkers((prev) => [...prev.filter((i) => i.id !== payload.old.id)]);
@@ -245,7 +230,7 @@ function Dashboard() {
                     />
 
                     <div className="map-footer">
-                        © 2026 {t("dashboard.light_map")} | v2.2.1
+                        © 2026 {t("dashboard.light_map")} | v2.2.3
                     </div>
 
                     {/* 👉 BUTTON mở drawer (mobile) */}
@@ -334,7 +319,7 @@ function Dashboard() {
                         />
                         
                     </Drawer>
-                    <InstallPWA />
+                    {/* <InstallPWA /> */}
                     </>
                 )}
         

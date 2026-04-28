@@ -7,7 +7,7 @@ import TabsSwitcher from "../TabsSwitcher/TabsSwitcher";
 import AuthButtons from "../AuthButton/AuthButtons";
 import LanguageSwitcher from "../LanguageSwitcher/LanguageSwitcher";
 import { supabase } from '../../supabaseClient';
-import notiSound from "../../sound/noti.mp3"
+import { playSystemSound } from '../../utils/soundUtils.js';
 
 function SidebarContent({
     userRole,
@@ -31,7 +31,6 @@ function SidebarContent({
     }) {
     const [totalUnread, setTotalUnread] = useState(0)
     const prevUnreadRef = useRef(0);
-    const audioRef = useRef(new Audio(notiSound));
 
     useEffect(() => {
         if (!userId) return
@@ -65,8 +64,7 @@ function SidebarContent({
             totalUnread > prevUnreadRef.current &&
             !chatTarget // đang không mở chat
         ) {
-            audioRef.current.currentTime = 0;
-            audioRef.current.play().catch(() => {});
+            playSystemSound('noti');
         }
 
         prevUnreadRef.current = totalUnread;
@@ -111,6 +109,7 @@ function SidebarContent({
                     mapRef={mapRef}
                     activeUserId={activeUserId}
                     onSendMessage={setChatTarget}
+                    onCloseDrawer={onCloseDrawer}
                     />
 
                     <ChatDrawer

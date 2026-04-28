@@ -9,13 +9,12 @@ export const useChat = (currentUserId, targetUserId) => {
     const [loadingMore, setLoadingMore] = useState(false)
     const [hasMore, setHasMore] = useState(true)
     const channelRef = useRef(null)
-    const oldestCreatedAtRef = useRef(null) // track tin cũ nhất đang có
+    const oldestCreatedAtRef = useRef(null) 
     const { t } = useTranslation();
 
     useEffect(() => {
         if (!currentUserId || !targetUserId) return
 
-        // Reset khi đổi cuộc trò chuyện
         setMessages([])
         setHasMore(true)
         oldestCreatedAtRef.current = null
@@ -49,20 +48,19 @@ export const useChat = (currentUserId, targetUserId) => {
                 `and(sender_id.eq.${currentUserId},receiver_id.eq.${targetUserId}),` +
                 `and(sender_id.eq.${targetUserId},receiver_id.eq.${currentUserId})`
             )
-            .order('created_at', { ascending: false }) // mới nhất trước
+            .order('created_at', { ascending: false }) // Mới nhất nằm đầu [0]
             .limit(PAGE_SIZE)
 
         if (!error && data) {
-            const sorted = [...data].reverse() // đảo lại để hiển thị đúng thứ tự
-            setMessages(sorted)
+            setMessages(data) // KHÔNG reverse nữa
             setHasMore(data.length === PAGE_SIZE)
-            oldestCreatedAtRef.current = sorted[0]?.created_at || null
+            // Lấy thời gian của tin nhắn cũ nhất (nằm ở cuối mảng data)
+            oldestCreatedAtRef.current = data[data.length - 1]?.created_at || null
         }
 
         setLoading(false)
     }
 
-    // Scroll lên → load thêm tin cũ hơn
     const loadMore = useCallback(async () => {
         if (loadingMore || !hasMore || !oldestCreatedAtRef.current) return
 
@@ -75,15 +73,15 @@ export const useChat = (currentUserId, targetUserId) => {
                 `and(sender_id.eq.${currentUserId},receiver_id.eq.${targetUserId}),` +
                 `and(sender_id.eq.${targetUserId},receiver_id.eq.${currentUserId})`
             )
-            .lt('created_at', oldestCreatedAtRef.current) // trước tin cũ nhất
+            .lt('created_at', oldestCreatedAtRef.current)
             .order('created_at', { ascending: false })
             .limit(PAGE_SIZE)
 
         if (!error && data) {
-            const sorted = [...data].reverse()
-            setMessages(prev => [...sorted, ...prev]) // prepend lên đầu
+            // Append tin nhắn cũ vào CUỐI mảng
+            setMessages(prev => [...prev, ...data]) 
             setHasMore(data.length === PAGE_SIZE)
-            oldestCreatedAtRef.current = sorted[0]?.created_at || null
+            oldestCreatedAtRef.current = data[data.length - 1]?.created_at || null
         }
 
         setLoadingMore(false)
@@ -102,7 +100,8 @@ export const useChat = (currentUserId, targetUserId) => {
                     (msg.sender_id === currentUserId && msg.receiver_id === targetUserId) ||
                     (msg.sender_id === targetUserId && msg.receiver_id === currentUserId)
                 if (relevant) {
-                    setMessages(prev => [...prev, msg]) // append xuống cuối
+                    // Prepend tin nhắn mới vào ĐẦU mảng
+                    setMessages(prev => [msg, ...prev]) 
                     if (msg.sender_id === targetUserId) markAsRead()
                 }
             })
@@ -117,7 +116,6 @@ export const useChat = (currentUserId, targetUserId) => {
             content: content.trim(),
         })
         if (error) console.error('sendMessage error:', error);
-        // ✅ Gửi push cho receiver
         if (!error) {
             supabase.functions.invoke('send-push', {
                 body: {

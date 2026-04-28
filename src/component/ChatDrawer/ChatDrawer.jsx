@@ -7,20 +7,16 @@ import { useChat } from '../../hooks/useChat'
 import { getInitials, getAvatarColor } from '../../utils/common'
 import * as prohibitWord from "../../utils/prohibitMessage.js";
 import { useTranslation } from "react-i18next";
-import {formatMessageTime} from "../../utils/common.js";
+import { formatMessageTime } from "../../utils/common.js";
 import chatImgBg from "../../img/bluesky.jpg"
 
 const ChatDrawer = ({ open, onClose, currentUser, targetUser }) => {
     const [input, setInput] = useState('')
     const [showPicker, setShowPicker] = useState(false)
-    const bottomRef = useRef(null)
     const pickerRef = useRef(null)
     const inputRef = useRef(null)
+    const observerRef = useRef(null) // Dùng để theo dõi khi scroll lên top
     const { t } = useTranslation();
-    const messagesContainerRef = useRef(null)
-    const prevScrollHeightRef = useRef(0)
-    const isLoadingMoreRef = useRef(false)
-    const isFirstLoadRef = useRef(true) // ✅ track lần đầu load
 
     let isMobile = window.innerWidth < 768;
 
@@ -29,51 +25,32 @@ const ChatDrawer = ({ open, onClose, currentUser, targetUser }) => {
         targetUser?.user_id
     )
 
-    // ✅ Reset isFirstLoadRef khi đổi target
-    useEffect(() => {
-        isFirstLoadRef.current = true
-    }, [targetUser?.user_id])
+    // Xử lý Infinite Scroll (Load thêm khi cuộn lên kịch trần)
+   // Khai báo một ref để lưu trữ instance của IntersectionObserver
+    const observer = useRef(null);
 
-    // ✅ Chỉ scroll xuống cuối khi lần đầu load xong hoặc gửi tin mới
-    useEffect(() => {
-        if (loading) return // đang load, chưa scroll
+    // Dùng useCallback để tạo một Callback Ref
+    const observerTargetRef = useCallback((node) => {
+        // Nếu đang tải thêm thì bỏ qua
+        if (loadingMore) return;
 
-        if (isFirstLoadRef.current) {
-            // Lần đầu load xong → scroll xuống cuối
-            bottomRef.current?.scrollIntoView({ behavior: 'auto' })
-            isFirstLoadRef.current = false
-            return
-        }
+        // Ngắt kết nối observer cũ (nếu có) để tránh rò rỉ bộ nhớ hoặc gọi trùng lặp
+        if (observer.current) observer.current.disconnect();
 
-        // Kiểm tra nếu đang ở gần cuối → scroll xuống (tin mới đến)
-        const el = messagesContainerRef.current
-        if (!el) return
-        const isNearBottom = el.scrollHeight - el.scrollTop - el.clientHeight < 100
-        if (isNearBottom) {
-            bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
-        }
-    }, [messages, loading])
+        // Khởi tạo observer mới
+        observer.current = new IntersectionObserver((entries) => {
+            if (entries[0].isIntersecting && hasMore) {
+                loadMore();
+            }
+        }, { 
+            threshold: 0.1,
+            rootMargin: '100px' // Mẹo nhỏ: Cho phép kích hoạt load sớm 100px trước khi cuộn chạm mốc, giúp trải nghiệm mượt hơn
+        });
 
-    // ✅ Restore scroll position sau khi loadMore prepend tin cũ
-    useEffect(() => {
-        if (!isLoadingMoreRef.current) return
-        const el = messagesContainerRef.current
-        if (!el) return
-        el.scrollTop = el.scrollHeight - prevScrollHeightRef.current
-    }, [messages.length])
-
-    // ✅ Detect scroll lên đầu → load more
-    const handleScroll = useCallback(() => {
-        const el = messagesContainerRef.current
-        if (!el || isLoadingMoreRef.current) return
-        if (el.scrollTop < 50 && hasMore && !loadingMore) {
-            isLoadingMoreRef.current = true
-            prevScrollHeightRef.current = el.scrollHeight
-            loadMore().finally(() => {
-                isLoadingMoreRef.current = false
-            })
-        }
-    }, [hasMore, loadingMore, loadMore])
+        // Nếu DOM node đã sẵn sàng thì bắt đầu quan sát nó
+        if (node) observer.current.observe(node);
+        
+    }, [loadingMore, hasMore, loadMore]);
 
     // Click ngoài picker → đóng
     useEffect(() => {
@@ -86,7 +63,6 @@ const ChatDrawer = ({ open, onClose, currentUser, targetUser }) => {
         return () => document.removeEventListener('mousedown', handleClickOutside)
     }, [])
 
-    // Đóng drawer → reset
     useEffect(() => {
         if (!open) {
             setShowPicker(false)
@@ -152,70 +128,77 @@ const ChatDrawer = ({ open, onClose, currentUser, targetUser }) => {
         >
             {/* ── Messages ── */}
             <div
-                ref={messagesContainerRef}
-                onScroll={handleScroll}
-                style={{ 
+                style={{
                     position: 'relative', zIndex: 1,
                     height: '100%', overflowY: 'auto',
                     padding: '16px 12px',
                     backgroundImage: `linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url(${chatImgBg})`,
                     backgroundSize: 'cover',
                     backgroundPosition: 'center',
+                    // BÍ QUYẾT Ở ĐÂY:
+                    display: 'flex', 
+                    flexDirection: 'column-reverse', 
                 }}
             >
-                {/* Load more indicator */}
-                {loadingMore && (
-                    <div style={{ textAlign: 'center', padding: '8px 0' }}>
-                        <Spin size="small" />
-                    </div>
-                )}
-
-                {/* Đã tải hết */}
-                {!hasMore && messages.length > 0 && (
-                    <div style={{ textAlign: 'center', fontSize: 11, color: '#555', padding: '8px 0' }}>
-                        {t('messageModal.load_all_mess')}
-                    </div>
-                )}
-
-                {/* ✅ Loading lần đầu */}
+                {/* Lần đầu load */}
                 {loading ? (
-                    <div style={{ textAlign: 'center', paddingTop: 40 }}>
+                    <div style={{ textAlign: 'center', paddingBottom: 40 }}>
                         <Spin />
                     </div>
                 ) : (
-                    messages.map((msg) => {
-                        const isMine = msg.sender_id === currentUser?.id
-                        return (
-                            <div key={msg.id} style={{
-                                display: 'flex',
-                                justifyContent: isMine ? 'flex-end' : 'flex-start',
-                                marginBottom: 8,
-                            }}>
-                                <div style={{
-                                    maxWidth: '75%',
-                                    background: isMine ? '#facc15' : '#1f1f1f',
-                                    color: isMine ? '#000' : '#f0f0f0',
-                                    padding: '8px 12px',
-                                    borderRadius: isMine
-                                        ? '16px 16px 4px 16px'
-                                        : '16px 16px 16px 4px',
-                                    fontSize: 14,
-                                    lineHeight: 1.5,
-                                    wordBreak: 'break-word',
+                    <>
+                        {/* Render tin nhắn. Mảng đang là [Mới -> Cũ] nên flex-direction: column-reverse sẽ xếp tin mới nhất xuống dưới cùng */}
+                        {messages.map((msg) => {
+                            const isMine = msg.sender_id === currentUser?.id
+                            return (
+                                <div key={msg.id} style={{
+                                    display: 'flex',
+                                    justifyContent: isMine ? 'flex-end' : 'flex-start',
+                                    marginBottom: 8,
+                                    marginTop: 4, // Đảo lại margin cho hợp column-reverse
                                 }}>
-                                    {msg.content}
                                     <div style={{
-                                        fontSize: 10, opacity: 0.5,
-                                        marginTop: 3, textAlign: 'right',
+                                        maxWidth: '75%',
+                                        background: isMine ? '#facc15' : '#1f1f1f',
+                                        color: isMine ? '#000' : '#f0f0f0',
+                                        padding: '8px 12px',
+                                        borderRadius: isMine
+                                            ? '16px 16px 4px 16px'
+                                            : '16px 16px 16px 4px',
+                                        fontSize: 14,
+                                        lineHeight: 1.5,
+                                        wordBreak: 'break-word',
                                     }}>
-                                        {formatMessageTime(msg.created_at)}
+                                        {msg.content}
+                                        <div style={{
+                                            fontSize: 10, opacity: 0.5,
+                                            marginTop: 3, textAlign: 'right',
+                                        }}>
+                                            {formatMessageTime(msg.created_at)}
+                                        </div>
                                     </div>
                                 </div>
+                            )
+                        })}
+
+                        {/* Điểm neo để trigger Load More (Nó sẽ nằm ở TẬN CÙNG PHÍA TRÊN do column-reverse) */}
+                        <div ref={observerTargetRef} style={{ height: 10, width: '100%' }} />
+
+                        {/* Load more indicator */}
+                        {loadingMore && (
+                            <div style={{ textAlign: 'center', padding: '16px 0' }}>
+                                <Spin size="small" />
                             </div>
-                        )
-                    })
+                        )}
+
+                        {/* Đã tải hết */}
+                        {!hasMore && messages.length > 0 && (
+                            <div style={{ textAlign: 'center', fontSize: 11, color: '#e5e5e5', padding: '16px 0' }}>
+                                {t('messageModal.load_all_mess')}
+                            </div>
+                        )}
+                    </>
                 )}
-                <div ref={bottomRef} />
             </div>
 
             {/* ── Emoji Picker (popup) ── */}

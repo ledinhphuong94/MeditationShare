@@ -38,6 +38,7 @@ export default function InstallPWA() {
 
         // Vẫn lắng nghe sự kiện để nếu có prompt thì dùng
         const handler = (e) => {
+            console.log('✅ beforeinstallprompt fired!')
             e.preventDefault()
             setDeferredPrompt(e)
         }

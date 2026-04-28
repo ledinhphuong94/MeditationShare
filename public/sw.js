@@ -1,4 +1,4 @@
-const CACHE_NAME = 'bandoanhsang-v2.2.2';
+const CACHE_NAME = 'bandoanhsang-v2.2.3';
 const urlsToCache = [
     '/',
     '/index.html',
