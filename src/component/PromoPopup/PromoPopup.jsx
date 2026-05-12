@@ -73,8 +73,8 @@ const PromoPopup = ({isMobile}) => {
                                 Hành trình Việt Nam Thức Tỉnh
                             </h3>
 
-                            <p style={{ margin: "6px 0", color: "#aaa", fontSize: 13 }}>
-                                Hà Nội
+                            <p style={{ margin: "6px 0", color: "#562b00", fontSize: 13 }}>
+                                <b>🇻🇳 Hà Nội</b>
                             </p>
 
                             <p style={{ margin: "6px 0", fontSize: 13 }}>
@@ -95,7 +95,7 @@ const PromoPopup = ({isMobile}) => {
                                     window.open("https://phatphapcaptien.github.io/hanhtrinhvietnamthuctinh/", "_blank")
                                 }
                             >
-                                Xem ngay
+                                Đăng ký tham dự miễn phí
                             </Button>
                         </div>
                     </Card>
