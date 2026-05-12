@@ -74,11 +74,11 @@ const PromoPopup = ({isMobile}) => {
                             </h3>
 
                             <p style={{ margin: "6px 0", color: "#aaa", fontSize: 13 }}>
-                                Huế - Đà Nẵng
+                                Hà Nội
                             </p>
 
                             <p style={{ margin: "6px 0", fontSize: 13 }}>
-                                📅 01/05/2026 - 04/05/2026
+                                📅 10/06/2026 - 14/06/2026
                             </p>
 
                             <Button
